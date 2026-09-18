@@ -1,0 +1,6 @@
+<ng-container *ngIf="getStatusConfig(status) as cfg">
+  <span class="dvc-status-badge" [ngClass]="[cfg.class, 'size-' + size]">
+    <span nz-icon [nzType]="cfg.icon" [nzSpin]="cfg.spin || false" class="status-icon"></span>
+    <span class="status-label">{{ cfg.label }}</span>
+  </span>
+</ng-container>

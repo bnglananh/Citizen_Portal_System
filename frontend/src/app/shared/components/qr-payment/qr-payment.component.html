@@ -1,0 +1,247 @@
+<!-- Embedded Card Mode -->
+@if (mode === 'card') {
+  <div class="qr-payment-card" [class.is-paid]="isPaid">
+    <div class="card-header-row">
+      <div class="header-title-group">
+        <div class="icon-circle" [class.paid-icon]="isPaid">
+          <i nz-icon [nzType]="isPaid ? 'check-circle' : 'qrcode'" nzTheme="outline"></i>
+        </div>
+        <div>
+          <h3 class="box-title">Lệ phí & Thanh toán trực tuyến (VietQR)</h3>
+          <p class="box-subtitle">Thanh toán chuyển khoản 24/7 qua cổng quét mã QR ngân hàng</p>
+        </div>
+      </div>
+
+      <div class="status-badge-box">
+        @if (isPaid) {
+          <nz-tag nzColor="success">
+            <i nz-icon nzType="check"></i> ĐÃ THANH TOÁN
+          </nz-tag>
+        } @else {
+          <nz-tag nzColor="warning">
+            <i nz-icon nzType="clock-circle"></i> CHƯA THANH TOÁN
+          </nz-tag>
+        }
+      </div>
+    </div>
+
+    <!-- Payment Body -->
+    <div class="payment-body-grid">
+      <!-- Left: Fee amount & Bank Info -->
+      <div class="fee-info-side">
+        <div class="fee-display-box">
+          <span class="fee-label">Lệ phí quy định:</span>
+          <span class="fee-amount tabular-nums">
+            {{ feeAmount === 0 ? 'Miễn phí' : (feeAmount | number) + ' VNĐ' }}
+          </span>
+        </div>
+
+        @if (!isPaid) {
+          <div class="bank-details-list">
+            <div class="bank-item">
+              <span class="lbl">Tài khoản thụ hưởng:</span>
+              <strong class="val">{{ accountHolder }}</strong>
+            </div>
+            <div class="bank-item">
+              <span class="lbl">Ngân hàng:</span>
+              <span class="val">{{ bankName }}</span>
+            </div>
+            <div class="bank-item highlight-row">
+              <span class="lbl">Số tài khoản:</span>
+              <div class="copy-val-group">
+                <span class="val font-mono font-bold">{{ bankAccount }}</span>
+                <button nz-button nzType="text" nzSize="small" (click)="copyToClipboard('0123456789', 'Số tài khoản')">
+                  <i nz-icon nzType="copy"></i>
+                </button>
+              </div>
+            </div>
+            <div class="bank-item highlight-row">
+              <span class="lbl">Nội dung chuyển khoản:</span>
+              <div class="copy-val-group">
+                <span class="val font-mono font-bold text-primary">{{ transferMemo }}</span>
+                <button nz-button nzType="text" nzSize="small" (click)="copyToClipboard(transferMemo, 'Nội dung CK')">
+                  <i nz-icon nzType="copy"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="action-buttons-row">
+            <button nz-button nzType="primary" (click)="confirmPayment()" [nzLoading]="isProcessing" class="btn-confirm-pay">
+              <i nz-icon nzType="check"></i> XÁC NHẬN ĐÃ CHUYỂN KHOẢN
+            </button>
+            <button nz-button nzType="default" (click)="openQrModal()" class="btn-zoom-qr">
+              <i nz-icon nzType="fullscreen"></i> Mở rộng mã QR
+            </button>
+          </div>
+        } @else {
+          <!-- Paid summary box -->
+          <div class="paid-success-summary">
+            <div class="receipt-meta-box">
+              <div class="r-row">
+                <span>Mã biên lai điện tử:</span>
+                <strong class="font-mono">{{ receipt?.receiptCode || ('BL-' + applicationCode) }}</strong>
+              </div>
+              <div class="r-row">
+                <span>Thời gian giao dịch:</span>
+                <span>{{ receipt?.paidAt || 'Vừa hoàn tất' }}</span>
+              </div>
+              <div class="r-row">
+                <span>Phương thức:</span>
+                <span>VietQR Chuyển khoản</span>
+              </div>
+            </div>
+
+            <div class="paid-actions">
+              <button nz-button nzType="default" (click)="openReceiptModal()" class="btn-view-receipt">
+                <i nz-icon nzType="file-text"></i> Xem biên lai thu phí
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Right: VietQR Code Box -->
+      <div class="qr-code-side">
+        <div class="qr-wrapper-frame" (click)="confirmPayment()" style="cursor: pointer;" title="Bấm trực tiếp vào mã QR để thanh toán (Giả lập)">
+          <img [src]="qrUrl" alt="Mã QR thanh toán VietQR" class="qr-image" />
+          <div class="qr-hint-overlay">
+            <i nz-icon nzType="thunderbolt" nzTheme="fill" style="color: #52c41a; font-size: 18px;"></i>
+            <span style="font-weight: 700; color: #1890ff;">BẤM VÀO ĐÂY ĐỂ THANH TOÁN</span>
+            <span style="font-size: 11px; opacity: 0.85;">(Giả lập thanh toán thành công)</span>
+          </div>
+        </div>
+        <p style="text-align: center; margin-top: 6px; font-size: 12px; color: #52c41a; font-weight: 600;">
+          ⚡ Bấm trực tiếp vào mã QR để xác nhận nộp phí
+        </p>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Modal Trigger Mode (e.g. for simple buttons) -->
+@if (mode === 'modal-trigger') {
+  <div class="modal-trigger-wrapper">
+    @if (isPaid) {
+      <button nz-button nzType="default" (click)="openReceiptModal()" class="btn-receipt-pill">
+        <i nz-icon nzType="check-circle" class="text-success"></i> Đã nộp lệ phí (Xem biên lai)
+      </button>
+    } @else {
+      <button nz-button nzType="primary" (click)="confirmPayment()" class="btn-pay-pill" title="Bấm để thanh toán nhanh">
+        <i nz-icon nzType="qrcode"></i> Bấm nộp lệ phí VietQR ({{ feeAmount | number }} đ)
+      </button>
+    }
+  </div>
+}
+
+<!-- QR ZOOM / PAYMENT MODAL -->
+<nz-modal
+  [(nzVisible)]="isQrModalVisible"
+  nzTitle="QUÉT MÃ VIETQR ĐỂ NỘP LỆ PHÍ DỊCH VỤ CÔNG"
+  (nzOnCancel)="closeQrModal()"
+  [nzFooter]="qrModalFooter"
+  nzWidth="540px"
+  nzCentered
+>
+  <ng-container *nzModalContent>
+    <div class="qr-modal-body">
+      <div class="qr-modal-preview" (click)="confirmPayment()" style="cursor: pointer;" title="Bấm vào ảnh QR để thanh toán">
+        <img [src]="qrUrl" alt="Mã QR thanh toán VietQR" class="qr-modal-img" />
+        <div style="margin-top: 8px; text-align: center; color: #52c41a; font-weight: bold; font-size: 13px;">
+          ⚡ Bấm vào ảnh QR để xác nhận thanh toán (Giả lập)
+        </div>
+      </div>
+
+      <div class="qr-modal-info">
+        <div class="modal-info-row">
+          <span class="k">Đơn vị nhận:</span>
+          <strong class="v">{{ accountHolder }}</strong>
+        </div>
+        <div class="modal-info-row">
+          <span class="k">Số tiền:</span>
+          <strong class="v text-primary font-mono tabular-nums">{{ (feeAmount | number) }} VNĐ</strong>
+        </div>
+        <div class="modal-info-row highlight">
+          <span class="k">Nội dung CK:</span>
+          <strong class="v text-primary font-mono">{{ transferMemo }}</strong>
+        </div>
+        <p class="qr-modal-note">
+          <i nz-icon nzType="info-circle"></i> Sử dụng bất kỳ App Ngân hàng (Vietcombank, MB, BIDV, Techcombank, VPBank...) để quét mã thanh toán tự động.
+        </p>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #qrModalFooter>
+    <div class="modal-footer-btns">
+      <button nz-button nzType="default" (click)="closeQrModal()">Đóng</button>
+      <button nz-button nzType="primary" (click)="confirmPayment()" [nzLoading]="isProcessing">
+        <i nz-icon nzType="check"></i> Tôi đã hoàn tất chuyển khoản
+      </button>
+    </div>
+  </ng-template>
+</nz-modal>
+
+<!-- ELECTRONIC RECEIPT MODAL -->
+<nz-modal
+  [(nzVisible)]="isReceiptModalVisible"
+  nzTitle="BIÊN LAI ĐIỆN TỬ THU LỆ PHÍ DỊCH VỤ CÔNG"
+  (nzOnCancel)="closeReceiptModal()"
+  [nzFooter]="receiptModalFooter"
+  nzWidth="600px"
+  nzCentered
+>
+  <ng-container *nzModalContent>
+    <div class="receipt-paper">
+      <div class="receipt-header">
+        <div class="emblem-row">
+          <h4>ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHÚ</h4>
+          <p>KHO BẠC NHÀ NƯỚC - BỘ PHẬN TIẾP NHẬN & TRẢ KẾT QUẢ</p>
+        </div>
+        <h2 class="receipt-title">BIÊN LAI THU PHÍ, LỆ PHÍ TRỰC TUYẾN</h2>
+        <span class="receipt-code font-mono">{{ receipt?.receiptCode || ('BL-' + applicationCode) }}</span>
+      </div>
+
+      <div class="receipt-content-grid">
+        <div class="r-field">
+          <span class="rf-label">Họ tên người nộp:</span>
+          <span class="rf-val font-bold">{{ receipt?.citizenName || citizenName || 'Công dân' }}</span>
+        </div>
+        <div class="r-field">
+          <span class="rf-label">Mã số hồ sơ:</span>
+          <span class="rf-val font-mono font-bold">{{ applicationCode }}</span>
+        </div>
+        <div class="r-field full">
+          <span class="rf-label">Thủ tục hành chính:</span>
+          <span class="rf-val">{{ procedureName }}</span>
+        </div>
+        <div class="r-field full">
+          <span class="rf-label">Số tiền thu:</span>
+          <span class="rf-val font-bold text-primary font-mono tabular-nums">
+            {{ (receipt?.amount || feeAmount) | number }} VNĐ
+          </span>
+        </div>
+        <div class="r-field">
+          <span class="rf-label">Thời gian nộp:</span>
+          <span class="rf-val">{{ receipt?.paidAt || 'Hoàn tất giao dịch' }}</span>
+        </div>
+        <div class="r-field">
+          <span class="rf-label">Hình thức nộp:</span>
+          <span class="rf-val">VietQR Chuyển khoản trực tuyến</span>
+        </div>
+      </div>
+
+      <div class="receipt-stamp-box">
+        <div class="stamp-circle">
+          <span>UBND PHƯỜNG TÂN PHÚ</span>
+          <strong>ĐÃ THU TIỀN</strong>
+          <small>Xác thực điện tử</small>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #receiptModalFooter>
+    <button nz-button nzType="primary" (click)="closeReceiptModal()">Đóng biên lai</button>
+  </ng-template>
+</nz-modal>

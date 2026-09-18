@@ -1,0 +1,121 @@
+.uploader-container {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin-bottom: 12px;
+  transition: var(--transition-fast);
+
+  &:hover {
+    border-color: #D6D0C3;
+  }
+
+  &.has-file {
+    border-color: var(--color-brand-primary);
+  }
+
+  .uploader-header {
+    margin-bottom: 10px;
+
+    .title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .doc-title {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--color-text-primary);
+      }
+
+      .req-badge {
+        font-size: 11px;
+        color: #9E2A2B;
+        background-color: #F9EAE8;
+        padding: 1px 6px;
+        border-radius: 3px;
+        font-weight: 500;
+      }
+    }
+
+    .doc-desc {
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      display: block;
+      margin-top: 2px;
+    }
+  }
+
+  ::ng-deep .ant-upload.ant-upload-drag {
+    background-color: var(--color-bg-subtle);
+    border: 1px dashed var(--color-border);
+    border-radius: 6px;
+    transition: var(--transition-fast);
+
+    &:hover {
+      border-color: var(--color-brand-primary);
+      background-color: var(--color-brand-primary-light);
+    }
+  }
+
+  .upload-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px;
+    text-align: left;
+
+    .upload-icon {
+      font-size: 28px;
+      color: var(--color-brand-primary);
+    }
+
+    .upload-text {
+      display: flex;
+      flex-direction: column;
+      font-size: 13px;
+      color: var(--color-text-primary);
+
+      .upload-hint {
+        font-size: 12px;
+        color: var(--color-text-secondary);
+        margin-top: 2px;
+      }
+    }
+  }
+
+  .file-preview-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .file-type-icon {
+        font-size: 24px;
+        color: var(--color-brand-primary);
+      }
+
+      .file-details {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+
+        .file-name {
+          font-weight: 500;
+          font-size: 13px;
+          color: var(--color-text-primary);
+        }
+
+        .file-size, .file-status-uploaded {
+          font-size: 12px;
+          color: var(--color-text-secondary);
+        }
+      }
+    }
+  }
+}

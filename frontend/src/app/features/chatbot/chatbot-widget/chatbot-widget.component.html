@@ -1,0 +1,154 @@
+<div class="chatbot-floating-wrapper">
+  <!-- 1. Floating Action Button (FAB) -->
+  <button
+    class="chatbot-fab-btn"
+    [class.active]="isOpen"
+    (click)="toggleChat()"
+    nz-tooltip
+    [nzTooltipTitle]="isOpen ? 'Đóng trợ lý ảo' : 'Chat với Trợ lý ảo AI Dịch vụ công'"
+    nzTooltipPlacement="left"
+  >
+    @if (!isOpen) {
+      <div class="fab-icon-inner">
+        <i nz-icon nzType="robot" nzTheme="outline" class="bot-icon"></i>
+        <span class="ai-badge-pulse">AI</span>
+      </div>
+    } @else {
+      <i nz-icon nzType="close" nzTheme="outline" class="close-icon"></i>
+    }
+  </button>
+
+  <!-- 2. Chat Box Window Popup -->
+  @if (isOpen) {
+    <div class="chat-window animate-fade-in-up">
+      <!-- Chat Header -->
+      <div class="chat-header">
+        <div class="header-left">
+          <div class="bot-avatar-header">
+            <i nz-icon nzType="robot" nzTheme="outline"></i>
+            <span class="online-indicator"></span>
+          </div>
+          <div class="header-title-box">
+            <h4 class="title">Trợ lý ảo Dịch vụ công</h4>
+            <span class="subtitle"><i nz-icon nzType="check-circle" nzTheme="outline"></i> Hỗ trợ giải đáp 24/7 (AI Gemini)</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button
+            class="action-btn"
+            (click)="resetChat()"
+            nz-tooltip
+            nzTooltipTitle="Làm mới đoạn chat"
+          >
+            <i nz-icon nzType="reload" nzTheme="outline"></i>
+          </button>
+          <button
+            class="action-btn"
+            (click)="toggleChat()"
+            nz-tooltip
+            nzTooltipTitle="Thu nhỏ"
+          >
+            <i nz-icon nzType="close" nzTheme="outline"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Prompts Row (nổi trên đầu) -->
+      @if (quickPrompts.length > 0) {
+        <div class="quick-prompts-bar">
+          <div class="prompt-chips">
+            @for (p of quickPrompts; track p.label) {
+              <button class="chip-btn" (click)="selectPrompt(p.prompt)">
+                <i nz-icon nzType="message" nzTheme="outline"></i>
+                <span>{{ p.label }}</span>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Messages Content Body -->
+      <div class="chat-body" #messagesContainer>
+        @for (msg of messages; track $index) {
+          <div class="chat-message-row" [class.user-row]="msg.senderType === 'USER'" [class.ai-row]="msg.senderType === 'AI'">
+            @if (msg.senderType === 'AI') {
+              <div class="msg-avatar ai-avatar">
+                <i nz-icon nzType="robot" nzTheme="outline"></i>
+              </div>
+            }
+
+            <div class="msg-bubble-container">
+              <div class="msg-bubble" [class.ai-bubble]="msg.senderType === 'AI'" [class.user-bubble]="msg.senderType === 'USER'">
+                <div class="msg-text" [innerHTML]="formatContent(msg.content)"></div>
+
+                <div class="msg-meta">
+                  <span class="msg-time">{{ msg.createdAt }}</span>
+                  @if (msg.senderType === 'AI') {
+                    <button class="copy-btn" (click)="copyContent(msg.content)" nz-tooltip nzTooltipTitle="Sao chép câu trả lời">
+                      <i nz-icon nzType="copy" nzTheme="outline"></i>
+                    </button>
+                  }
+                </div>
+              </div>
+            </div>
+
+            @if (msg.senderType === 'USER') {
+              <div class="msg-avatar user-avatar">
+                <i nz-icon nzType="user" nzTheme="outline"></i>
+              </div>
+            }
+          </div>
+        }
+
+        <!-- Typing Indicator -->
+        @if (isLoading) {
+          <div class="chat-message-row ai-row">
+            <div class="msg-avatar ai-avatar">
+              <i nz-icon nzType="robot" nzTheme="outline"></i>
+            </div>
+            <div class="msg-bubble-container">
+              <div class="msg-bubble ai-bubble typing-bubble">
+                <div class="typing-indicator">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Chat Input Footer -->
+      <div class="chat-footer">
+        <form (ngSubmit)="sendMessage()" class="input-form">
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="inputMessage"
+            name="chatMessage"
+            placeholder="Nhập câu hỏi cần hỗ trợ thủ tục..."
+            [disabled]="isLoading"
+            autocomplete="off"
+            class="chat-input"
+          />
+          <button
+            type="submit"
+            nz-button
+            nzType="primary"
+            class="send-btn"
+            [disabled]="!inputMessage.trim() || isLoading"
+            [nzLoading]="isLoading"
+          >
+            <i nz-icon nzType="send" nzTheme="outline"></i>
+          </button>
+        </form>
+
+        <div class="footer-disclaimer">
+          <span>💡 Trợ lý AI hỗ trợ tra cứu thông tin, không thay thế quyết định hành chính chính thức.</span>
+        </div>
+      </div>
+    </div>
+  }
+</div>

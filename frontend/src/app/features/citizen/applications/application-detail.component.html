@@ -1,0 +1,169 @@
+<div class="app-detail-container">
+  <!-- Breadcrumb -->
+  <nz-breadcrumb class="app-breadcrumb">
+    <nz-breadcrumb-item><a routerLink="/">Trang chủ</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/citizen/applications">Hồ sơ của tôi</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ application.applicationCode }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+  <!-- Top Application Banner Card -->
+  <div class="app-header-card">
+    <div class="header-info">
+      <div class="header-badges">
+        <span class="app-code-badge">{{ application.applicationCode }}</span>
+        <app-status-tag [status]="application.status"></app-status-tag>
+      </div>
+      <h1 class="header-proc-title">{{ application.procedureName }}</h1>
+      <div class="header-timestamps">
+        <span><i nz-icon nzType="calendar"></i> Ngày nộp: <strong>{{ application.createdAt }}</strong></span>
+        <span><i nz-icon nzType="clock-circle"></i> Cập nhật lần cuối: <strong>{{ application.updatedAt }}</strong></span>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <a nz-button nzType="default" routerLink="/citizen/applications">
+        <i nz-icon nzType="arrow-left"></i> Danh sách hồ sơ
+      </a>
+    </div>
+  </div>
+
+  <!-- Special Alerts based on status -->
+  @if (application.status === 'NEED_REVISION') {
+    <div class="revision-alert-box">
+      <div class="alert-header">
+        <i nz-icon nzType="warning" nzTheme="fill"></i>
+        <h3>YÊU CẦU BỔ SUNG / HOÀN THIỆN HỒ SƠ</h3>
+      </div>
+      <p class="alert-content"><strong>Nội dung yêu cầu từ Cán bộ:</strong> {{ application.note }}</p>
+    </div>
+  }
+
+  @if (application.status === 'COMPLETED') {
+    <div class="completed-result-card">
+      <div class="result-crest">
+        <i nz-icon nzType="safety-certificate" nzTheme="fill"></i>
+      </div>
+      <div class="result-info">
+        <h3>HỒ SƠ ĐÃ ĐƯỢC PHÊ DUYỆT HOÀN TẤT</h3>
+        <p>Kết quả giải quyết thủ tục đã có bản điện tử có chữ ký số hợp lệ và bản giấy đã sẵn sàng.</p>
+      </div>
+      <div class="result-actions">
+        @if (application.resultFilePath) {
+          <a nz-button nzType="primary" nzSize="large" [href]="downloadUrl(application.resultFilePath)" target="_blank" class="btn-download-cert">
+            <i nz-icon nzType="download"></i> Tải Kết quả điện tử (PDF Ký số)
+          </a>
+        } @else {
+          <button nz-button nzType="primary" nzSize="large" class="btn-download-cert" disabled>
+            <i nz-icon nzType="check"></i> Đã phê duyệt hoàn tất
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Main Content Layout: Left Details, Right Timeline -->
+  <div class="app-detail-grid">
+    <!-- LEFT COLUMN: Forms, Documents, and Supplement Box -->
+    <div class="left-column">
+      <!-- 1. Applicant & Request Details -->
+      <div class="detail-card">
+        <div class="card-section-title">
+          <i nz-icon nzType="user" class="sec-icon"></i>
+          <h3>Thông tin người nộp & Yêu cầu giải quyết</h3>
+        </div>
+
+        <nz-descriptions nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }">
+          <nz-descriptions-item nzTitle="Họ và tên công dân">{{ application.citizenName }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Số CCCD">{{ application.citizenIdCard }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Số điện thoại">{{ application.citizenPhone }}</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Cơ quan tiếp nhận">UBND Phường Tân Phú, TP. Hồ Chí Minh</nz-descriptions-item>
+          <nz-descriptions-item nzTitle="Ghi chú hồ sơ" [nzSpan]="2">{{ application.note || 'Không có ghi chú thêm' }}</nz-descriptions-item>
+
+        </nz-descriptions>
+      </div>
+
+      <!-- Payment / VietQR Card (If Procedure has Fee) -->
+      @if (application.feeAmount && application.feeAmount > 0) {
+        <app-qr-payment
+          [applicationCode]="application.applicationCode"
+          [procedureName]="application.procedureName"
+          [feeAmount]="application.feeAmount"
+          [citizenName]="application.citizenName || ''"
+          mode="card"
+        ></app-qr-payment>
+      }
+
+      <!-- 2. Attached Documents -->
+      <div class="detail-card">
+        <div class="card-section-title">
+          <i nz-icon nzType="paper-clip" class="sec-icon"></i>
+          <h3>Thành phần hồ sơ đã đính kèm ({{ application.documents?.length || 0 }})</h3>
+        </div>
+
+        <div class="documents-grid">
+          @for (doc of application.documents; track doc.id) {
+            <div class="doc-file-item">
+              <div class="doc-icon-box">
+                <i nz-icon nzType="file-pdf" nzTheme="outline"></i>
+              </div>
+              <div class="doc-meta">
+                <span class="doc-title">{{ doc.documentName }}</span>
+                <span class="doc-size">{{ doc.fileSize ? (doc.fileSize / 1024).toFixed(0) + ' KB' : 'Tài liệu đính kèm' }}</span>
+              </div>
+              <div class="doc-actions">
+                <a nz-button nzType="text" nzSize="small" [href]="downloadUrl(doc.filePath)" target="_blank" title="Tải về máy">
+                  <i nz-icon nzType="download"></i> Tải về
+                </a>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+
+      <!-- 3. Supplement Upload Area (If NEED_REVISION) -->
+      @if (application.status === 'NEED_REVISION') {
+        <div class="detail-card supplement-card">
+          <div class="card-section-title">
+            <i nz-icon nzType="upload" class="sec-icon warning-icon"></i>
+            <div>
+              <h3>Tải lên tệp tài liệu bổ sung</h3>
+              <p>Chọn hoặc kéo thả các tệp đã chỉnh sửa để gửi lại cán bộ kiểm tra</p>
+            </div>
+          </div>
+
+          <app-file-uploader (filesChange)="onSupplementFilesChanged($event)"></app-file-uploader>
+
+          <div class="supplement-submit-bar">
+            <button
+              nz-button
+              nzType="primary"
+              nzSize="large"
+              [nzLoading]="isResubmitting"
+              (click)="submitRevision()"
+              class="btn-send-revision"
+            >
+              <i nz-icon nzType="send"></i> GỬI BỔ SUNG HỒ SƠ CHO CÁN BỘ
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- RIGHT COLUMN: Timeline Progress (UX Highlight) -->
+    <div class="right-column">
+      <div class="detail-card timeline-card">
+        <div class="card-section-title">
+          <i nz-icon nzType="history" class="sec-icon"></i>
+          <h3>Tiến trình xử lý hồ sơ</h3>
+        </div>
+        <p class="timeline-hint">Lộ trình giải quyết minh bạch theo từng bước quy trình</p>
+
+        <app-application-timeline
+          [history]="application.history || []"
+          [currentStatus]="application.status"
+        >
+        </app-application-timeline>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,18 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=827846
-  "recommendations": ["angular.ng-template"]
+  "recommendations": [
+    // Java & Spring Boot
+    "vscjava.vscode-java-pack",
+    "vmware.vscode-spring-boot",
+    "vscjava.vscode-spring-initializr",
+    "vscjava.vscode-lombok",
+
+    // Angular & Frontend
+    "angular.ng-template",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+
+    // General Tooling
+    "editorconfig.editorconfig",
+    "eamodio.gitlens"
+  ]
 }

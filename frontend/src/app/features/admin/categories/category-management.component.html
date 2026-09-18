@@ -1,0 +1,161 @@
+<div class="cat-mgmt-wrapper">
+  <!-- Page Header -->
+  <div class="page-top-bar">
+    <div>
+      <h1 class="page-title">Quản lý Danh mục Lĩnh vực</h1>
+      <p class="page-desc">Phân loại lĩnh vực quản lý nhà nước cho các thủ tục hành chính tại địa phương</p>
+    </div>
+    <button nz-button nzType="primary" (click)="openAddModal()" class="btn-add-cat">
+      <i nz-icon nzType="plus"></i> Thêm lĩnh vực mới
+    </button>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="search-box">
+      <nz-input-wrapper>
+        <span nzInputPrefix><i nz-icon nzType="search"></i></span>
+        <input
+          type="text"
+          nz-input
+          placeholder="Tìm theo mã, tên, mô tả lĩnh vực..."
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="filterCategories()"
+        />
+      </nz-input-wrapper>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <nz-table
+      #catTable
+      [nzData]="filteredCategories"
+      [nzLoading]="isLoading"
+      [nzPageSize]="10"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[5, 10, 20, 50]"
+      [nzShowQuickJumper]="true"
+      [nzShowTotal]="catTotalTpl"
+      nzBordered
+      nzSize="middle"
+    >
+      <ng-template #catTotalTpl let-total>
+        <span class="tabular-nums font-medium text-slate-500">Tổng cộng: <strong>{{ total }}</strong> lĩnh vực</span>
+      </ng-template>
+      <thead>
+        <tr>
+          <th nzWidth="60px" class="text-center">STT</th>
+          <th nzWidth="150px">Mã lĩnh vực</th>
+          <th nzWidth="220px">Tên lĩnh vực</th>
+          <th>Mô tả phạm vi</th>
+          <th nzWidth="130px" class="text-center">Trạng thái</th>
+          <th nzWidth="140px" class="text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of catTable.data; track c.id; let i = $index) {
+          <tr>
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td>
+              <div class="cat-code-badge">
+                <i nz-icon [nzType]="c.icon || 'appstore'" class="cat-icon"></i>
+                <span class="font-mono font-bold">{{ c.code }}</span>
+              </div>
+            </td>
+            <td><strong>{{ c.name }}</strong></td>
+            <td><span class="cat-desc-text">{{ c.description || 'Chưa có mô tả' }}</span></td>
+            <td class="text-center">
+              @if (c.active !== false) {
+                <span class="status-pill status-active">
+                  <i nz-icon nzType="check-circle" nzTheme="fill"></i> Đang áp dụng
+                </span>
+              } @else {
+                <span class="status-pill status-inactive">
+                  <i nz-icon nzType="stop" nzTheme="outline"></i> Đã tạm ẩn
+                </span>
+              }
+            </td>
+            <td class="text-center">
+              <nz-space>
+                <button *nzSpaceItem nz-button nzType="text" nzSize="small" (click)="openEditModal(c)" class="btn-action-edit">
+                  <i nz-icon nzType="edit"></i> Sửa
+                </button>
+                <button
+                  *nzSpaceItem
+                  nz-button
+                  nzType="text"
+                  nzDanger
+                  nzSize="small"
+                  nz-popconfirm
+                  nzPopconfirmTitle="Bạn có chắc chắn muốn xóa hoặc ẩn lĩnh vực này?"
+                  nzOkText="Đồng ý"
+                  nzCancelText="Hủy"
+                  (nzOnConfirm)="deleteCategory(c)"
+                >
+                  <i nz-icon nzType="delete"></i> Xóa
+                </button>
+              </nz-space>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+
+  <!-- Modal Form -->
+  <nz-modal
+    [(nzVisible)]="isModalVisible"
+    [nzTitle]="isEditing ? 'CHỈNH SỬA LĨNH VỰC' : 'THÊM MỚI LĨNH VỰC'"
+    (nzOnCancel)="isModalVisible = false"
+    (nzOnOk)="saveCategory()"
+    [nzOkLoading]="isLoading"
+    nzOkText="Lưu thông tin"
+    nzCancelText="Hủy bỏ"
+    nzWidth="540px"
+  >
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="categoryForm" nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label nzRequired>Mã lĩnh vực</nz-form-label>
+          <nz-form-control nzErrorTip="Vui lòng nhập mã lĩnh vực (tối đa 50 ký tự)">
+            <input type="text" nz-input formControlName="code" placeholder="VD: HO_TICH, DAT_DAI, XAY_DUNG" style="text-transform: uppercase;" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Tên lĩnh vực</nz-form-label>
+          <nz-form-control nzErrorTip="Vui lòng nhập tên lĩnh vực">
+            <input type="text" nz-input formControlName="name" placeholder="VD: Hộ tịch & Tư pháp" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Biểu tượng (Icon đại diện)</nz-form-label>
+          <nz-form-control>
+            <nz-select formControlName="icon" style="width: 100%;">
+              @for (iconItem of availableIcons; track iconItem.value) {
+                <nz-option [nzValue]="iconItem.value" [nzLabel]="iconItem.label"></nz-option>
+              }
+            </nz-select>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Mô tả chi tiết phạm vi áp dụng</nz-form-label>
+          <nz-form-control>
+            <textarea rows="3" nz-input formControlName="description" placeholder="VD: Các thủ tục hành chính liên quan đến khai sinh, kết hôn, trích lục..."></textarea>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label>Trạng thái kích hoạt</nz-form-label>
+          <nz-form-control>
+            <nz-switch formControlName="active" nzCheckedChildren="Bật" nzUnCheckedChildren="Tắt"></nz-switch>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </ng-container>
+  </nz-modal>
+</div>
+

@@ -1,0 +1,119 @@
+<div class="my-apps-wrapper">
+  <!-- Page Header -->
+  <div class="page-header-row">
+    <div>
+      <h1 class="page-title">Hồ sơ dịch vụ công của tôi</h1>
+      <p class="page-subtitle">Quản lý và theo dõi toàn bộ tiến độ xử lý hồ sơ hành chính đã nộp</p>
+    </div>
+    <a nz-button nzType="primary" routerLink="/procedures" class="btn-new-app">
+      <i nz-icon nzType="plus"></i> Nộp hồ sơ mới
+    </a>
+  </div>
+
+  <!-- Main Card -->
+  <div class="table-container-card">
+    <!-- Tabset by Status -->
+    <nz-tabs [nzSelectedIndex]="selectedTab" (nzSelectedIndexChange)="onTabChange($event)" class="status-tabset">
+      <nz-tab nzTitle="Tất cả ({{ applications.length }})"></nz-tab>
+      <nz-tab nzTitle="Chờ tiếp nhận"></nz-tab>
+      <nz-tab nzTitle="Đang xử lý"></nz-tab>
+      <nz-tab>
+        <ng-template nz-tab>
+          <span>Cần bổ sung</span>
+          @if (getRevisionCount() > 0) {
+            <nz-badge [nzCount]="getRevisionCount()" class="tab-alert-badge"></nz-badge>
+          }
+        </ng-template>
+      </nz-tab>
+      <nz-tab nzTitle="Đã hoàn tất"></nz-tab>
+      <nz-tab nzTitle="Bị từ chối"></nz-tab>
+    </nz-tabs>
+
+    <!-- Toolbar Filters -->
+    <div class="table-toolbar">
+      <div class="search-box">
+        <nz-input-wrapper>
+          <span nzInputPrefix><i nz-icon nzType="search"></i></span>
+          <input
+            type="text"
+            nz-input
+            placeholder="Tìm theo Mã hồ sơ, Tên thủ tục..."
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="filterApps()"
+          />
+        
+        </nz-input-wrapper>
+        <ng-template #searchPrefix><i nz-icon nzType="search"></i></ng-template>
+      </div>
+
+      <button nz-button nzType="default" (click)="searchQuery = ''; filterApps()">
+        <i nz-icon nzType="reload"></i> Làm mới
+      </button>
+    </div>
+
+    <!-- Table of Applications -->
+    <nz-table
+      #appTable
+      [nzData]="filteredApplications"
+      [nzPageSize]="10"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[5, 10, 20, 50]"
+      [nzShowQuickJumper]="true"
+      [nzShowTotal]="appTotalTpl"
+      class="citizen-apps-table"
+      nzBordered
+    >
+      <ng-template #appTotalTpl let-total>
+        Tổng cộng {{ total }} hồ sơ
+      </ng-template>
+      <thead>
+        <tr>
+          <th nzWidth="70px" class="text-center">STT</th>
+          <th nzWidth="150px">Mã hồ sơ</th>
+          <th>Tên thủ tục hành chính</th>
+          <th nzWidth="150px">Ngày nộp</th>
+          <th nzWidth="160px">Trạng thái</th>
+          <th nzWidth="140px" class="text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of appTable.data; track item.id; let i = $index) {
+          <tr [class.highlight-row]="item.status === 'NEED_REVISION'">
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td>
+              <strong class="app-code-link">
+                <a [routerLink]="['/citizen/applications', item.id]">{{ item.applicationCode }}</a>
+              </strong>
+            </td>
+            <td>
+              <div class="proc-name-cell">
+                <strong>{{ item.procedureName }}</strong>
+                @if (item.note && item.status === 'NEED_REVISION') {
+                  <div class="cell-alert-note">
+                    <i nz-icon nzType="warning" nzTheme="fill"></i>
+                    <span>Cán bộ lưu ý: {{ item.note }}</span>
+                  </div>
+                }
+              </div>
+            </td>
+            <td class="tabular-nums">{{ item.createdAt }}</td>
+            <td>
+              <app-status-tag [status]="item.status"></app-status-tag>
+            </td>
+            <td class="text-center">
+              <a
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                [routerLink]="['/citizen/applications', item.id]"
+                class="btn-view-detail"
+              >
+                <i nz-icon nzType="eye"></i> Chi tiết
+              </a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+</div>

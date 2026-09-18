@@ -1,0 +1,39 @@
+<div class="uploader-container" [class.has-file]="selectedFile || existingFileName">
+  <div class="uploader-header">
+    <div class="title-group">
+      <span class="doc-title">{{ documentName }}</span>
+      <span class="req-badge" *ngIf="isRequired">* Bắt buộc</span>
+    </div>
+    <span class="doc-desc" *ngIf="description">{{ description }}</span>
+  </div>
+
+  <nz-upload
+    nzType="drag"
+    [nzMultiple]="false"
+    [nzAccept]="accept"
+    [nzBeforeUpload]="beforeUpload"
+    class="upload-drag-area"
+  >
+    <div class="upload-content" *ngIf="!selectedFile && !existingFileName">
+      <span nz-icon nzType="cloud-upload" class="upload-icon"></span>
+      <div class="upload-text">
+        <span>Nhấp hoặc kéo thả tệp vào đây để tải lên</span>
+        <span class="upload-hint">Định dạng hỗ trợ: PDF, JPG, PNG, DOC (Tối đa {{ maxSizeMb }}MB)</span>
+      </div>
+    </div>
+
+    <div class="file-preview-card" *ngIf="selectedFile || existingFileName">
+      <div class="file-info">
+        <span nz-icon [nzType]="getFileIcon(displayFileName || existingFileName || '')" class="file-type-icon"></span>
+        <div class="file-details">
+          <span class="file-name">{{ displayFileName || existingFileName }}</span>
+          <span class="file-size tabular-nums" *ngIf="fileSizeStr">{{ fileSizeStr }}</span>
+          <span class="file-status-uploaded" *ngIf="existingFileName && !selectedFile">Đã có tệp đính kèm</span>
+        </div>
+      </div>
+      <button nz-button nzType="text" nzDanger (click)="removeFile($event)" class="remove-btn">
+        <span nz-icon nzType="delete"></span>
+      </button>
+    </div>
+  </nz-upload>
+</div>

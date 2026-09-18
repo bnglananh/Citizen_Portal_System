@@ -1,0 +1,97 @@
+<div class="noti-page-wrapper">
+  <!-- Page Header -->
+  <div class="page-top-bar">
+    <div>
+      <h1 class="page-title">Trung tâm Thông báo</h1>
+      <p class="page-desc">Theo dõi thông báo tiếp nhận, yêu cầu bổ sung và kết quả giải quyết thủ tục</p>
+    </div>
+    @if (getUnreadCount() > 0) {
+      <button nz-button nzType="default" (click)="markAllAsRead()" class="btn-mark-all">
+        <i nz-icon nzType="check"></i> Đánh dấu tất cả đã đọc
+      </button>
+    }
+  </div>
+
+  <!-- Main Card -->
+  <div class="noti-card">
+    <nz-tabs [nzSelectedIndex]="selectedTab" (nzSelectedIndexChange)="onTabChange($event)" class="noti-tabs">
+      <nz-tab nzTitle="Tất cả thông báo ({{ notifications.length }})"></nz-tab>
+      <nz-tab [nzTitle]="'Chưa đọc (' + getUnreadCount() + ')'"></nz-tab>
+      <nz-tab nzTitle="Đã đọc"></nz-tab>
+    </nz-tabs>
+
+    <!-- Notification Items List -->
+    @if (filteredList.length > 0) {
+      <div class="noti-items-stream">
+        @for (item of pagedNotifications; track item.id) {
+          <div
+            class="noti-row"
+            [class.unread]="!item.read"
+            (click)="markAsRead(item)"
+          >
+            <div class="noti-left-indicator">
+              <div class="type-icon-box" [class.alert-type]="item.notificationType === 'ACTION_REQUIRED'">
+                @if (item.notificationType === 'ACTION_REQUIRED') {
+                  <i nz-icon nzType="exclamation-circle" nzTheme="fill"></i>
+                } @else if (item.notificationType === 'SYSTEM') {
+                  <i nz-icon nzType="setting"></i>
+                } @else {
+                  <i nz-icon nzType="file-text"></i>
+                }
+              </div>
+            </div>
+
+            <div class="noti-main-content">
+              <div class="noti-title-row">
+                <h4 class="item-title">{{ item.title }}</h4>
+                <span class="item-time tabular-nums">{{ item.createdAt }}</span>
+              </div>
+              <p class="item-desc">{{ item.content }}</p>
+
+              @if (item.applicationId) {
+                <div class="item-actions">
+                  <a
+                    nz-button
+                    nzType="link"
+                    [routerLink]="['/citizen/applications', item.applicationId]"
+                    class="btn-detail-link"
+                  >
+                    Xem chi tiết hồ sơ @if (item.applicationCode) { ({{ item.applicationCode }}) } <i nz-icon nzType="arrow-right"></i>
+                  </a>
+                </div>
+              }
+            </div>
+
+            <div class="noti-right-status">
+              @if (!item.read) {
+                <span class="unread-pill">Chưa đọc</span>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Pagination Footer -->
+      <div class="noti-pagination-box">
+        <nz-pagination
+          [nzPageIndex]="pageIndex"
+          [nzTotal]="filteredList.length"
+          [nzPageSize]="pageSize"
+          [nzPageSizeOptions]="pageSizeOptions"
+          [nzShowSizeChanger]="true"
+          [nzShowQuickJumper]="true"
+          [nzShowTotal]="totalNotiTpl"
+          (nzPageIndexChange)="onPageIndexChange($event)"
+          (nzPageSizeChange)="onPageSizeChange($event)"
+        ></nz-pagination>
+        <ng-template #totalNotiTpl let-total>
+          <span class="tabular-nums font-medium text-slate-500">Tổng cộng: <strong>{{ total }}</strong> thông báo</span>
+        </ng-template>
+      </div>
+    } @else {
+      <div class="empty-box">
+        <nz-empty nzNotFoundContent="Không có thông báo nào trong danh mục này"></nz-empty>
+      </div>
+    }
+  </div>
+</div>

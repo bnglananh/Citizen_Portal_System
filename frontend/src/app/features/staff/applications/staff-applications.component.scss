@@ -1,0 +1,129 @@
+.staff-apps-wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-title-box {
+  margin-bottom: 1.25rem;
+
+  .page-title {
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--dvc-primary);
+    margin: 0 0 0.25rem;
+  }
+
+  .page-desc {
+    font-size: 0.84rem;
+    color: var(--dvc-text-muted);
+    margin: 0;
+  }
+}
+
+/* Filter Toolbar */
+.filter-toolbar-card {
+  background: #FFFFFF;
+  border-radius: var(--dvc-radius-md);
+  border: 1px solid var(--dvc-border-color);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: var(--dvc-shadow-sm);
+
+  .filter-grid {
+    display: flex;
+    gap: 1.25rem;
+    align-items: flex-end;
+  }
+
+  .filter-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    label {
+      font-size: 0.775rem;
+      font-weight: 600;
+      color: var(--dvc-text-primary);
+    }
+
+    &.search-item {
+      flex: 1;
+      max-width: 380px;
+    }
+
+    .w-100 {
+      width: 220px;
+    }
+
+    .btn-reset {
+      height: 34px;
+    }
+  }
+}
+
+/* Table Card */
+.table-card {
+  background: #FFFFFF;
+  border-radius: var(--dvc-radius-lg);
+  border: 1px solid var(--dvc-border-color);
+  padding: 1.5rem;
+  box-shadow: var(--dvc-shadow-sm);
+
+  .high-density-table {
+    ::ng-deep .ant-table-thead > tr > th {
+      background: #FAF7F2;
+      font-weight: 700;
+      color: var(--dvc-text-primary);
+      font-size: 0.84rem;
+      padding: 0.65rem 0.85rem;
+    }
+
+    ::ng-deep .ant-table-tbody > tr > td {
+      padding: 0.65rem 0.85rem;
+      font-size: 0.84rem;
+    }
+
+    .code-link a {
+      color: var(--dvc-primary);
+      font-family: var(--dvc-font-mono);
+      font-weight: 600;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    .citizen-meta {
+      display: flex;
+      flex-direction: column;
+
+      .c-name {
+        font-weight: 600;
+        color: var(--dvc-text-primary);
+      }
+
+      .c-id {
+        font-size: 0.75rem;
+        color: var(--dvc-text-muted);
+      }
+    }
+
+    .btn-appraise {
+      background-color: var(--dvc-primary);
+      border-color: var(--dvc-primary);
+      font-size: 0.775rem;
+      font-weight: 600;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .filter-grid {
+    flex-direction: column;
+    align-items: stretch !important;
+    .search-item, .w-100 {
+      max-width: 100% !important;
+      width: 100% !important;
+    }
+  }
+}

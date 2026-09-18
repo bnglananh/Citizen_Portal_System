@@ -1,0 +1,221 @@
+<nz-layout class="admin-layout-wrapper">
+  <!-- Left Sidebar -->
+  <nz-sider
+    class="admin-sider"
+    nzCollapsible
+    [(nzCollapsed)]="isCollapsed"
+    [nzWidth]="280"
+    [nzCollapsedWidth]="80"
+    [nzTrigger]="null"
+  >
+    <!-- Brand Logo in Sider -->
+    <div class="sider-brand" [class.collapsed]="isCollapsed">
+      <div class="brand-icon">
+        <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+      </div>
+      @if (!isCollapsed) {
+        <div class="brand-text">
+          <div class="portal-unit" title="UBND PHƯỜNG TÂN PHÚ">UBND PHƯỜNG TÂN PHÚ</div>
+          <div class="portal-badge-wrap">
+            <nz-tag [nzColor]="roleBadgeColor">{{ roleBadgeText }}</nz-tag>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Sider Menu -->
+    <ul nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed" nzTheme="dark" class="sider-menu">
+      <!-- 1. ADMIN MENU ITEMS -->
+      @if (isAdmin) {
+        <li nz-menu-item nzMatchRouter routerLink="/staff/dashboard" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Bàn làm việc' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="dashboard" nzTheme="outline"></i>
+          <span>Bàn làm việc</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/staff/applications" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Hồ sơ thẩm định' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="audit" nzTheme="outline"></i>
+          <span>Hồ sơ thẩm định</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/admin/dashboard" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Tổng quan thống kê' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="appstore" nzTheme="outline"></i>
+          <span>Tổng quan thống kê</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/admin/users" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Quản lý Người dùng' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="team" nzTheme="outline"></i>
+          <span>Quản lý Người dùng</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/admin/categories" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Danh mục Lĩnh vực' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="folder" nzTheme="outline"></i>
+          <span>Danh mục Lĩnh vực</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/admin/procedures" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Thủ tục hành chính' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="form" nzTheme="outline"></i>
+          <span>Thủ tục hành chính</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/admin/faqs" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Quản lý Hỏi đáp (FAQ)' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+          <span>Quản lý Hỏi đáp (FAQ)</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/admin/chatbot" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Cấu hình Trợ lý AI' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="robot" nzTheme="outline"></i>
+          <span>Cấu hình Trợ lý AI</span>
+        </li>
+      }
+
+      <!-- 2. STAFF ONLY MENU ITEMS -->
+      @if (isStaff && !isAdmin) {
+        <li nz-menu-item nzMatchRouter routerLink="/staff/dashboard" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Bàn làm việc' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="dashboard" nzTheme="outline"></i>
+          <span>Bàn làm việc</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/staff/applications" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Hồ sơ thẩm định' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="audit" nzTheme="outline"></i>
+          <span>Hồ sơ thẩm định</span>
+        </li>
+      }
+
+      <!-- 3. CITIZEN MENU ITEMS -->
+      @if (isCitizen && !isStaff && !isAdmin) {
+        <li nz-menu-item nzMatchRouter routerLink="/citizen/dashboard" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Bàn làm việc' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="dashboard" nzTheme="outline"></i>
+          <span>Bàn làm việc</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/citizen/applications" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Hồ sơ của tôi' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="file-text" nzTheme="outline"></i>
+          <span>Hồ sơ của tôi</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/procedures" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Nộp hồ sơ trực tuyến' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="form" nzTheme="outline"></i>
+          <span>Nộp hồ sơ trực tuyến</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/tracking" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Tra cứu hồ sơ' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="search" nzTheme="outline"></i>
+          <span>Tra cứu hồ sơ</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/citizen/profile" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Thông tin cá nhân' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="idcard" nzTheme="outline"></i>
+          <span>Thông tin cá nhân</span>
+        </li>
+        <li nz-menu-item nzMatchRouter routerLink="/faq" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Hỏi đáp & Hướng dẫn' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+          <span>Hỏi đáp & Hướng dẫn</span>
+        </li>
+      }
+
+      <!-- SHARED LINKS (All roles) -->
+      <li nz-menu-item routerLink="/" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Về Cổng Người dân' : null" nzTooltipPlacement="right">
+        <i nz-icon nzType="home" nzTheme="outline"></i>
+        <span>Về Cổng Người dân</span>
+      </li>
+    </ul>
+  </nz-sider>
+
+  <!-- Right Main Layout -->
+  <nz-layout class="admin-main-section">
+    <!-- Top Bar -->
+    <nz-header class="admin-header">
+      <div class="header-left">
+        <button nz-button nzType="text" class="toggle-btn" (click)="toggleCollapsed()">
+          <i nz-icon [nzType]="isCollapsed ? 'menu-unfold' : 'menu-fold'"></i>
+        </button>
+        <nz-breadcrumb class="app-breadcrumb">
+          <nz-breadcrumb-item>
+            <a routerLink="/">Trang chủ</a>
+          </nz-breadcrumb-item>
+          <nz-breadcrumb-item>{{ portalTitle }}</nz-breadcrumb-item>
+        </nz-breadcrumb>
+      </div>
+
+      <div class="header-right">
+        <!-- Quick Search -->
+        <div class="header-search">
+          <div class="header-search-box">
+            <i nz-icon nzType="search" class="search-icon"></i>
+            <input
+              type="text"
+              placeholder="Tìm mã hồ sơ, người dân..."
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearch()"
+              class="header-search-input"
+            />
+          </div>
+        </div>
+
+        <!-- Notification Bell -->
+        <button nz-dropdown [nzDropdownMenu]="notiMenu" [nzPlacement]="'bottomRight'" nzTrigger="click" class="header-icon-btn">
+          <nz-badge [nzCount]="unreadCount" [nzOverflowCount]="99">
+            <i nz-icon nzType="bell" nzTheme="outline"></i>
+          </nz-badge>
+        </button>
+
+        <nz-dropdown-menu #notiMenu="nzDropdownMenu">
+          <div class="noti-dropdown-panel">
+            <div class="noti-header">
+              <h4>Thông báo nghiệp vụ ({{ unreadCount }})</h4>
+              <div class="noti-header-actions">
+                @if (unreadCount > 0) {
+                  <a (click)="markAllAsRead()" class="mark-read-btn">Đã đọc tất cả</a>
+                  <span class="divider">|</span>
+                }
+                <a routerLink="/notifications">Chi tiết</a>
+              </div>
+            </div>
+            <div class="noti-list">
+              @if (notifications.length > 0) {
+                @for (item of notifications; track item.id) {
+                  <div class="noti-item" [class.unread]="!item.read" (click)="onNotificationClick(item)">
+                    <div class="noti-dot" [class.active]="!item.read"></div>
+                    <div class="noti-body">
+                      <div class="noti-title">{{ item.title }}</div>
+                      <div class="noti-content-preview">{{ item.content }}</div>
+                      <div class="noti-time">{{ item.createdAt | date:'HH:mm dd/MM/yyyy' }}</div>
+                    </div>
+                  </div>
+                }
+              } @else {
+                <div class="noti-empty">
+                  <i nz-icon nzType="inbox" nzTheme="outline"></i>
+                  <span>Không có thông báo mới</span>
+                </div>
+              }
+            </div>
+          </div>
+        </nz-dropdown-menu>
+
+        <!-- User Profile Dropdown -->
+        <div class="admin-user-badge" nz-dropdown [nzDropdownMenu]="adminUserMenu" [nzPlacement]="'bottomRight'">
+          <nz-avatar nzIcon="user" class="avatar-box"></nz-avatar>
+          <div class="user-info-text">
+            <span class="user-display-name">{{ authService.currentUser()?.fullName || authService.currentUser()?.username }}</span>
+            <span class="user-role-name">{{ roleBadgeText }}</span>
+          </div>
+          <i nz-icon nzType="down" class="chevron-icon"></i>
+        </div>
+
+        <nz-dropdown-menu #adminUserMenu="nzDropdownMenu">
+          <ul nz-menu class="user-menu-dropdown">
+            <li nz-menu-item routerLink="/">
+              <i nz-icon nzType="home" nzTheme="outline"></i> Xem Cổng Công dân
+            </li>
+            <li nz-menu-item routerLink="/notifications">
+              <i nz-icon nzType="bell" nzTheme="outline"></i> Thông báo hệ thống
+            </li>
+            <li nz-menu-divider></li>
+            <li nz-menu-item (click)="logout()" class="logout-btn">
+              <i nz-icon nzType="logout" nzTheme="outline"></i> Đăng xuất
+            </li>
+          </ul>
+        </nz-dropdown-menu>
+      </div>
+    </nz-header>
+
+    <!-- Content Outlet Area -->
+    <nz-content class="admin-content-area">
+      <div class="admin-inner-container">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+
+    <!-- AI Chatbot Assistant Widget -->
+    <app-chatbot-widget></app-chatbot-widget>
+  </nz-layout>
+</nz-layout>

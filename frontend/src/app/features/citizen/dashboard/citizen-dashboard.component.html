@@ -1,0 +1,102 @@
+<div class="citizen-dash-wrapper">
+  <!-- Welcome Banner -->
+  <div class="welcome-banner">
+    <div class="banner-text">
+      <h2>Xin chào, {{ authService.currentUser()?.fullName || 'Công dân' }}!</h2>
+      <p>Chào mừng bạn đến với Bàn làm việc số Cổng Dịch vụ công trực tuyến</p>
+    </div>
+    <div class="quick-actions">
+      <a nz-button routerLink="/procedures" class="btn-create-app">
+        <span class="btn-icon-circle"><i nz-icon nzType="plus"></i></span>
+        <span>Nộp hồ sơ dịch vụ công mới</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 4 Summary Stat Cards -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon-box proc-icon">
+        <i nz-icon nzType="sync" nzSpin></i>
+      </div>
+      <div class="stat-content">
+        <nz-statistic [nzValue]="stats().processingCount + stats().receivedCount" nzTitle="Hồ sơ đang xử lý"></nz-statistic>
+        <span class="stat-sub">Cán bộ đang thẩm định</span>
+      </div>
+    </div>
+
+    <div class="stat-card warning-card">
+      <div class="stat-icon-box warn-icon">
+        <i nz-icon nzType="exclamation-circle" nzTheme="fill"></i>
+      </div>
+      <div class="stat-content">
+        <nz-statistic [nzValue]="stats().needRevisionCount" nzTitle="Cần bổ sung giấy tờ"></nz-statistic>
+        <span class="stat-sub text-warn">Cần xử lý ngay</span>
+      </div>
+    </div>
+
+    <div class="stat-card success-card">
+      <div class="stat-icon-box succ-icon">
+        <i nz-icon nzType="check-circle" nzTheme="fill"></i>
+      </div>
+      <div class="stat-content">
+        <nz-statistic [nzValue]="stats().completedCount" nzTitle="Đã có kết quả"></nz-statistic>
+        <span class="stat-sub">Có thể tải giấy tờ điện tử</span>
+      </div>
+    </div>
+
+    <div class="stat-card">
+      <div class="stat-icon-box total-icon">
+        <i nz-icon nzType="file-text"></i>
+      </div>
+      <div class="stat-content">
+        <nz-statistic [nzValue]="stats().totalApplications" nzTitle="Tổng số hồ sơ"></nz-statistic>
+        <span class="stat-sub">Tích lũy từ trước đến nay</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Applications Table Card -->
+  <div class="recent-apps-card">
+    <div class="card-header-row">
+      <div class="header-title-box">
+        <i nz-icon nzType="clock-circle" class="header-icon"></i>
+        <h3>Hồ sơ nộp gần đây</h3>
+      </div>
+      <a routerLink="/citizen/applications" class="view-all-btn">
+        Xem tất cả hồ sơ <i nz-icon nzType="right"></i>
+      </a>
+    </div>
+
+    <nz-table #recentTable [nzData]="recentApps" [nzFrontPagination]="false" [nzShowPagination]="false" nzBordered>
+      <thead>
+        <tr>
+          <th>Mã hồ sơ</th>
+          <th>Tên thủ tục hành chính</th>
+          <th>Ngày nộp</th>
+          <th>Trạng thái hiện tại</th>
+          <th class="text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of recentTable.data; track item.id) {
+          <tr>
+            <td>
+              <strong class="code-link">
+                <a [routerLink]="['/citizen/applications', item.id]">{{ item.applicationCode }}</a>
+              </strong>
+            </td>
+            <td><strong>{{ item.procedureName }}</strong></td>
+            <td class="tabular-nums">{{ item.createdAt }}</td>
+            <td><app-status-tag [status]="item.status"></app-status-tag></td>
+            <td class="text-center">
+              <a nz-button nzType="link" [routerLink]="['/citizen/applications', item.id]">
+                Xem tiến độ <i nz-icon nzType="right"></i>
+              </a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+</div>

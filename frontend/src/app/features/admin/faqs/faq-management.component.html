@@ -1,0 +1,128 @@
+<div class="faq-mgmt-wrapper">
+  <!-- Page Top Bar -->
+  <div class="page-top-bar">
+    <div>
+      <h1 class="page-title">Quản lý Hỏi đáp & Hướng dẫn (FAQ)</h1>
+      <p class="page-desc">Biên tập các câu hỏi thường gặp phục vụ người dân và đào tạo Chatbot AI</p>
+    </div>
+    <button nz-button nzType="primary" (click)="openAddModal()" class="btn-add-faq">
+      <i nz-icon nzType="plus"></i> Thêm câu hỏi mới
+    </button>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="search-box">
+      <nz-input-wrapper>
+          <span nzInputPrefix><i nz-icon nzType="search"></i></span>
+        <input
+          type="text"
+          nz-input
+          placeholder="Tìm câu hỏi, chuyên mục..."
+          [(ngModel)]="searchQuery"
+          (ngModelChange)="filterFaqs()"
+        />
+      
+        </nz-input-wrapper>
+      <ng-template #searchIcon><i nz-icon nzType="search"></i></ng-template>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <nz-table
+      #faqTable
+      [nzData]="filteredFaqs"
+      [nzPageSize]="10"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[5, 10, 20, 50]"
+      [nzShowQuickJumper]="true"
+      [nzShowTotal]="faqTotalTpl"
+      nzBordered
+      nzSize="middle"
+    >
+      <ng-template #faqTotalTpl let-total>
+        <span class="tabular-nums font-medium text-slate-500">Tổng cộng: <strong>{{ total }}</strong> câu hỏi</span>
+      </ng-template>
+      <thead>
+        <tr>
+          <th nzWidth="60px" class="text-center">STT</th>
+          <th nzWidth="180px">Chuyên mục</th>
+          <th nzWidth="300px">Câu hỏi thường gặp</th>
+          <th>Nội dung giải đáp</th>
+          <th nzWidth="110px" class="text-center">Hiển thị</th>
+          <th nzWidth="110px" class="text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (f of faqTable.data; track f.id; let i = $index) {
+          <tr>
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td><nz-tag nzColor="blue">{{ f.category }}</nz-tag></td>
+            <td><strong>{{ f.question }}</strong></td>
+            <td>{{ f.answer }}</td>
+            <td class="text-center">
+              <nz-switch [ngModel]="f.active" (ngModelChange)="toggleActive(f)" nzSize="small"></nz-switch>
+            </td>
+            <td class="text-center">
+              <button nz-button nzType="text" nzSize="small" (click)="openEditModal(f)">
+                <i nz-icon nzType="edit"></i> Sửa
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+
+  <!-- Modal Form -->
+  <nz-modal
+    [(nzVisible)]="isModalVisible"
+    [nzTitle]="isEditing ? 'CHỈNH SỬA CÂU HỎI FAQ' : 'THÊM MỚI CÂU HỎI FAQ'"
+    (nzOnCancel)="isModalVisible = false"
+    (nzOnOk)="saveFaq()"
+    [nzOkLoading]="isLoading"
+    nzOkText="Lưu câu hỏi"
+    nzCancelText="Hủy bỏ"
+    nzWidth="680px"
+  >
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="faqForm" nzLayout="vertical">
+        <div class="form-row-2">
+          <nz-form-item>
+            <nz-form-label nzRequired>Chuyên mục</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="category">
+                <nz-option nzValue="Hồ sơ & Thủ tục" nzLabel="Hồ sơ & Thủ tục"></nz-option>
+                <nz-option nzValue="Tài khoản & Định danh" nzLabel="Tài khoản & Định danh"></nz-option>
+                <nz-option nzValue="Bổ sung giấy tờ" nzLabel="Bổ sung giấy tờ"></nz-option>
+                <nz-option nzValue="Lệ phí & Nhận kết quả" nzLabel="Lệ phí & Nhận kết quả"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label nzRequired>Thứ tự hiển thị</nz-form-label>
+            <nz-form-control>
+              <input type="number" nz-input formControlName="orderNum" min="1" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Câu hỏi</nz-form-label>
+          <nz-form-control nzErrorTip="Vui lòng nhập câu hỏi">
+            <input type="text" nz-input formControlName="question" placeholder="VD: Làm sao để tra cứu hồ sơ?" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Nội dung câu trả lời chi tiết</nz-form-label>
+          <nz-form-control nzErrorTip="Vui lòng nhập câu trả lời">
+            <textarea rows="4" nz-input formControlName="answer" placeholder="Hướng dẫn chi tiết từng bước cho công dân..."></textarea>
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </ng-container>
+  </nz-modal>
+</div>

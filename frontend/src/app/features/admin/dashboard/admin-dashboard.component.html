@@ -1,0 +1,239 @@
+<div class="admin-dash-wrapper">
+  <!-- Page Top Row -->
+  <div class="dash-title-row">
+    <div>
+      <h1 class="page-title">Bảng Điều Khiển Trung Tâm & Chỉ Số Vĩ Mô</h1>
+      <p class="page-desc">Giám sát tổng thể người dùng, danh mục thủ tục, vòng đời hồ sơ và hiệu suất xử lý dịch vụ công trực tuyến</p>
+    </div>
+    <div class="dash-actions">
+      <button nz-button nzType="default" (click)="loadData()" [nzLoading]="isLoading()" class="btn-refresh">
+        <i nz-icon nzType="reload"></i> Làm mới số liệu
+      </button>
+      <a nz-button nzType="primary" routerLink="/admin/procedures" class="btn-primary-action">
+        <i nz-icon nzType="plus"></i> Thêm thủ tục mới
+      </a>
+    </div>
+  </div>
+
+  <!-- 5 Macro KPI Metric Cards -->
+  <div class="metrics-grid">
+    <!-- 1. Total Users -->
+    <div class="metric-card card-users">
+      <div class="metric-icon users-icon">
+        <i nz-icon nzType="team"></i>
+      </div>
+      <div class="metric-body">
+        <nz-statistic [nzValue]="stats().totalUsers || 0" nzTitle="Tổng số người dùng"></nz-statistic>
+        <span class="metric-sub"><i nz-icon nzType="safety"></i> Công dân, Cán bộ & Quản trị</span>
+      </div>
+    </div>
+
+    <!-- 2. Total Procedures -->
+    <div class="metric-card card-procedures">
+      <div class="metric-icon proc-icon">
+        <i nz-icon nzType="appstore"></i>
+      </div>
+      <div class="metric-body">
+        <nz-statistic [nzValue]="stats().totalProcedures || 0" nzTitle="Tổng số thủ tục HC"></nz-statistic>
+        <span class="metric-sub text-primary"><i nz-icon nzType="check-circle"></i> Đang công khai phục vụ</span>
+      </div>
+    </div>
+
+    <!-- 3. Total Applications -->
+    <div class="metric-card card-applications">
+      <div class="metric-icon total-icon">
+        <i nz-icon nzType="file-text"></i>
+      </div>
+      <div class="metric-body">
+        <nz-statistic [nzValue]="stats().totalApplications || 0" nzTitle="Tổng hồ sơ tiếp nhận"></nz-statistic>
+        <span class="metric-sub"><i nz-icon nzType="rise"></i> Tích lũy trên toàn hệ thống</span>
+      </div>
+    </div>
+
+    <!-- 4. Avg Processing Time -->
+    <div class="metric-card card-time">
+      <div class="metric-icon time-icon">
+        <i nz-icon nzType="clock-circle"></i>
+      </div>
+      <div class="metric-body">
+        <div class="custom-stat-value">
+          <span class="val-num">{{ stats().avgProcessingTimeDays || 1.8 }}</span>
+          <span class="val-unit">ngày / hồ sơ</span>
+        </div>
+        <span class="stat-title-label">Thời gian xử lý trung bình</span>
+        <span class="metric-sub text-success"><i nz-icon nzType="thunderbolt"></i> Nhanh hơn 35% quy định</span>
+      </div>
+    </div>
+
+    <!-- 5. On-time Rate -->
+    <div class="metric-card card-ontime">
+      <div class="metric-icon ontime-icon">
+        <i nz-icon nzType="safety-certificate"></i>
+      </div>
+      <div class="metric-body">
+        <div class="custom-stat-value">
+          <span class="val-num text-success">{{ stats().onTimeRate || 98.6 }}%</span>
+        </div>
+        <span class="stat-title-label">Tỷ lệ giải quyết đúng hạn</span>
+        <span class="metric-sub text-success"><i nz-icon nzType="trophy"></i> Đạt chuẩn chất lượng ISO</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 Main Analytics Charts Row -->
+  <div class="charts-row">
+    <!-- 1. Biểu đồ xu hướng nộp hồ sơ theo tháng (Monthly Trend Multi-Bar Chart) -->
+    <div class="chart-card monthly-trend-card">
+      <div class="chart-card-header">
+        <div class="title-with-icon">
+          <i nz-icon nzType="line-chart" class="sec-icon text-primary"></i>
+          <div>
+            <h3>Biểu đồ xu hướng nộp hồ sơ theo tháng</h3>
+            <span class="card-subtitle">So sánh số lượng hồ sơ tiếp nhận và hồ sơ giải quyết thành công qua các tháng</span>
+          </div>
+        </div>
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="legend-dot dot-received"></span>
+            <span>Hồ sơ tiếp nhận</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-dot dot-completed"></span>
+            <span>Hồ sơ đã hoàn tất</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="monthly-bars-canvas">
+        <div class="bar-chart-plot">
+          @for (item of monthlyTrends; track item.month) {
+            <div class="month-col">
+              <div class="bars-pair">
+                <!-- Received Bar -->
+                <div class="bar-pill bar-received" [style.height.%]="item.receivedHeight" [title]="'Tiếp nhận: ' + item.receivedCount + ' hồ sơ'">
+                  <span class="bar-count">{{ item.receivedCount }}</span>
+                </div>
+                <!-- Completed Bar -->
+                <div class="bar-pill bar-completed" [style.height.%]="item.completedHeight" [title]="'Đã giải quyết: ' + item.completedCount + ' hồ sơ'">
+                  <span class="bar-count">{{ item.completedCount }}</span>
+                </div>
+              </div>
+              <span class="month-label">{{ item.month }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. Biểu đồ tỷ lệ hồ sơ theo trạng thái (Status Distribution Chart) -->
+    <div class="chart-card status-dist-card">
+      <div class="chart-card-header">
+        <div class="title-with-icon">
+          <i nz-icon nzType="pie-chart" class="sec-icon text-primary"></i>
+          <div>
+            <h3>Biểu đồ tỷ lệ hồ sơ theo trạng thái</h3>
+            <span class="card-subtitle">Cơ cấu và tiến độ xử lý hồ sơ hiện tại</span>
+          </div>
+        </div>
+        <span class="total-badge">Tổng: <strong>{{ stats().totalApplications }}</strong> hồ sơ</span>
+      </div>
+
+      <div class="status-bars-list">
+        @for (item of statusBreakdown; track item.label) {
+          <div class="status-bar-item">
+            <div class="bar-header">
+              <div class="status-name-box">
+                <span class="status-indicator-dot" [style.background-color]="item.color"></span>
+                <span class="status-name">{{ item.label }}</span>
+              </div>
+              <span class="status-val tabular-nums"><strong>{{ item.count }}</strong> ({{ item.percent }}%)</span>
+            </div>
+            <nz-progress
+              [nzPercent]="item.percent"
+              [nzStrokeColor]="item.color"
+              [nzShowInfo]="false"
+              nzSize="small"
+            >
+            </nz-progress>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Row: Category Volumes & System Audit Logs -->
+  <div class="bottom-grid-row">
+    <!-- Category Volumes -->
+    <div class="chart-card cat-card">
+      <div class="chart-card-header">
+        <div class="title-with-icon">
+          <i nz-icon nzType="folder" class="sec-icon text-primary"></i>
+          <div>
+            <h3>Khối lượng tiếp nhận theo Lĩnh vực</h3>
+            <span class="card-subtitle">Phân bổ hồ sơ theo các nhóm thủ tục hành chính</span>
+          </div>
+        </div>
+        <a routerLink="/admin/categories" class="more-link">Quản lý lĩnh vực <i nz-icon nzType="arrow-right"></i></a>
+      </div>
+
+      <div class="cat-volume-list">
+        @for (cat of categoryVolumes; track cat.name) {
+          <div class="cat-vol-item">
+            <div class="cat-info-row">
+              <span class="cat-name"><i nz-icon nzType="file-done"></i> {{ cat.name }}</span>
+              <span class="cat-count tabular-nums"><strong>{{ cat.count }}</strong> hồ sơ ({{ cat.percent }}%)</span>
+            </div>
+            <nz-progress
+              [nzPercent]="cat.percent"
+              nzStrokeColor="#8C2B2B"
+              [nzShowInfo]="false"
+              nzSize="small"
+            >
+            </nz-progress>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Recent Audit Logs -->
+    <div class="chart-card audit-card">
+      <div class="chart-card-header">
+        <div class="title-with-icon">
+          <i nz-icon nzType="history" class="sec-icon text-primary"></i>
+          <div>
+            <h3>Nhật ký hoạt động hệ thống gần nhất</h3>
+            <span class="card-subtitle">Vết thao tác bảo mật theo thời gian thực</span>
+          </div>
+        </div>
+        <span class="badge-live"><i nz-icon nzType="sync" [nzSpin]="true"></i> Đang đồng bộ</span>
+      </div>
+
+      <nz-table #auditTable [nzData]="auditLogs" [nzFrontPagination]="false" [nzShowPagination]="false" nzSize="small" class="audit-table">
+        <thead>
+          <tr>
+            <th nzWidth="50px" class="text-center">STT</th>
+            <th>Người thực hiện</th>
+            <th nzWidth="120px">Vai trò</th>
+            <th>Thao tác nghiệp vụ</th>
+            <th nzWidth="110px">Thời điểm</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (log of auditTable.data; track log.id; let i = $index) {
+            <tr>
+              <td class="text-center font-bold text-muted">{{ i + 1 }}</td>
+              <td><strong>{{ log.user }}</strong></td>
+              <td>
+                <nz-tag [nzColor]="log.role === 'ROLE_ADMIN' ? 'gold' : (log.role === 'ROLE_STAFF' ? 'blue' : 'green')">
+                  {{ log.role === 'ROLE_ADMIN' ? 'Quản trị viên' : (log.role === 'ROLE_STAFF' ? 'Cán bộ' : 'Công dân') }}
+                </nz-tag>
+              </td>
+              <td class="action-desc">{{ log.action }}</td>
+              <td class="tabular-nums text-muted"><i nz-icon nzType="clock-circle"></i> {{ log.time }}</td>
+            </tr>
+          }
+        </tbody>
+      </nz-table>
+    </div>
+  </div>
+</div>

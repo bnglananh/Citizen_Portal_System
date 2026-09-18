@@ -1,0 +1,102 @@
+<div class="staff-dashboard-wrapper">
+  <!-- Top Title & Quick Actions -->
+  <div class="page-top-row">
+    <div>
+      <h1 class="page-title">Bàn làm việc Cán bộ Nghiệp vụ</h1>
+      <p class="page-desc">Theo dõi tiến độ tiếp nhận, thẩm định và xử lý hồ sơ thủ tục hành chính</p>
+    </div>
+    <div class="top-actions">
+      <a nz-button nzType="primary" routerLink="/staff/applications" class="btn-appraisal-queue">
+        <i nz-icon nzType="audit"></i> Danh sách hồ sơ cần thẩm định
+      </a>
+    </div>
+  </div>
+
+  <!-- 4 Stats Cards -->
+  <div class="stats-row">
+    <div class="stat-box-card pending-card">
+      <div class="stat-icon"><i nz-icon nzType="inbox"></i></div>
+      <div class="stat-info">
+        <nz-statistic [nzValue]="stats().submittedCount + stats().resubmittedCount" nzTitle="Chờ tiếp nhận"></nz-statistic>
+        <span class="stat-sub">Hồ sơ mới gửi tới tiếp nhận</span>
+      </div>
+    </div>
+
+    <div class="stat-box-card processing-card">
+      <div class="stat-icon"><i nz-icon nzType="sync" nzSpin></i></div>
+      <div class="stat-info">
+        <nz-statistic [nzValue]="stats().processingCount + stats().receivedCount" nzTitle="Đang thẩm định & Xử lý"></nz-statistic>
+        <span class="stat-sub">Đang trong thời hạn thụ lý</span>
+      </div>
+    </div>
+
+    <div class="stat-box-card revision-card">
+      <div class="stat-icon"><i nz-icon nzType="exclamation-circle"></i></div>
+      <div class="stat-info">
+        <nz-statistic [nzValue]="stats().needRevisionCount" nzTitle="Chờ công dân bổ sung"></nz-statistic>
+        <span class="stat-sub">Đã gửi yêu cầu chỉnh sửa</span>
+      </div>
+    </div>
+
+    <div class="stat-box-card completed-card">
+      <div class="stat-icon"><i nz-icon nzType="check-circle"></i></div>
+      <div class="stat-info">
+        <nz-statistic [nzValue]="stats().completedCount" nzTitle="Đã giải quyết"></nz-statistic>
+        <span class="stat-sub">Hoàn thành đúng hạn</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Urgent Queue Table -->
+  <div class="queue-card">
+    <div class="card-header-row">
+      <div class="header-left">
+        <i nz-icon nzType="clock-circle" class="sec-icon"></i>
+        <h3>Hồ sơ ưu tiên xử lý trong ngày</h3>
+      </div>
+      <a routerLink="/staff/applications" class="view-all-link">
+        Xem tất cả hàng đợi <i nz-icon nzType="right"></i>
+      </a>
+    </div>
+
+    <nz-table #urgentTable [nzData]="urgentApplications" [nzFrontPagination]="false" [nzShowPagination]="false" nzBordered class="staff-table">
+      <thead>
+        <tr>
+          <th nzWidth="60px" class="text-center">STT</th>
+          <th nzWidth="150px">Mã hồ sơ</th>
+          <th>Tên thủ tục hành chính</th>
+          <th>Người nộp</th>
+          <th nzWidth="150px">Ngày tiếp nhận</th>
+          <th nzWidth="160px">Trạng thái</th>
+          <th nzWidth="150px" class="text-center">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of urgentTable.data; track item.id; let i = $index) {
+          <tr>
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td>
+              <strong class="code-link">
+                <a [routerLink]="['/staff/applications', item.id, 'review']">{{ item.applicationCode }}</a>
+              </strong>
+            </td>
+            <td><strong>{{ item.procedureName }}</strong></td>
+            <td>
+              <div class="citizen-col">
+                <span>{{ item.citizenName }}</span>
+                <small class="text-muted">{{ item.citizenPhone }}</small>
+              </div>
+            </td>
+            <td class="tabular-nums">{{ item.createdAt }}</td>
+            <td><app-status-tag [status]="item.status"></app-status-tag></td>
+            <td class="text-center">
+              <a nz-button nzType="primary" nzSize="small" [routerLink]="['/staff/applications', item.id, 'review']" class="btn-review">
+                <i nz-icon nzType="audit"></i> Thẩm định
+              </a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+</div>

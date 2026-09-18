@@ -1,0 +1,244 @@
+.citizen-dash-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* Welcome Banner */
+.welcome-banner {
+  background: linear-gradient(135deg, #1C4431 0%, #102A1E 100%);
+  color: #FFFFFF;
+  border-radius: var(--dvc-radius-lg);
+  padding: 1.85rem 2.25rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 6px 20px rgba(16, 42, 30, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -10%;
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(245, 166, 35, 0.12) 0%, rgba(245, 166, 35, 0) 70%);
+    pointer-events: none;
+  }
+
+  .banner-text {
+    position: relative;
+    z-index: 1;
+
+    h2 {
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #FFFFFF;
+      margin: 0 0 0.35rem;
+      letter-spacing: -0.2px;
+    }
+    p {
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.82);
+      margin: 0;
+    }
+  }
+
+  .quick-actions {
+    position: relative;
+    z-index: 1;
+  }
+
+  .btn-create-app {
+    height: 44px;
+    padding: 0 1.35rem 0 0.85rem;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.2px;
+    background: linear-gradient(135deg, #F9B838 0%, #E68A00 100%);
+    border: none;
+    color: #1A1A1A;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    box-shadow: 0 4px 14px rgba(230, 138, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+
+    .btn-icon-circle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      color: #1A1A1A;
+      transition: all 0.3s ease;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, #FFC552 0%, #F59714 100%);
+      color: #1A1A1A;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 22px rgba(230, 138, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+
+      .btn-icon-circle {
+        background: rgba(0, 0, 0, 0.18);
+        transform: rotate(90deg);
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(230, 138, 0, 0.3);
+    }
+  }
+}
+
+/* Stats Grid */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+
+  .stat-card {
+    background: #FFFFFF;
+    border: 1px solid var(--dvc-border-color);
+    border-radius: var(--dvc-radius-md);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    box-shadow: var(--dvc-shadow-sm);
+
+    .stat-icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--dvc-radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+
+      &.proc-icon {
+        background: #F3EEE4;
+        color: var(--dvc-primary);
+      }
+      &.warn-icon {
+        background: #FFF7E6;
+        color: #FA8C16;
+      }
+      &.succ-icon {
+        background: #F4F8F5;
+        color: #52c41a;
+      }
+      &.total-icon {
+        background: #F0F5FF;
+        color: #2F54EB;
+      }
+    }
+
+    .stat-content {
+      flex: 1;
+
+      ::ng-deep .ant-statistic-title {
+        font-size: 0.8125rem;
+        color: var(--dvc-text-muted);
+        margin-bottom: 0.2rem;
+      }
+
+      ::ng-deep .ant-statistic-content-value {
+        font-family: var(--dvc-font-mono);
+        font-weight: 700;
+        font-size: 1.5rem;
+        color: var(--dvc-text-primary);
+      }
+
+      .stat-sub {
+        font-size: 0.725rem;
+        color: var(--dvc-text-muted);
+        display: block;
+        margin-top: 0.15rem;
+
+        &.text-warn {
+          color: #D46B08;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}
+
+/* Recent Apps Card */
+.recent-apps-card {
+  background: #FFFFFF;
+  border-radius: var(--dvc-radius-lg);
+  border: 1px solid var(--dvc-border-color);
+  padding: 1.5rem;
+  box-shadow: var(--dvc-shadow-sm);
+
+  .card-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+
+    .header-title-box {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+
+      .header-icon {
+        font-size: 1.25rem;
+        color: var(--dvc-primary);
+      }
+
+      h3 {
+        font-size: 1.15rem;
+        font-weight: 700;
+        color: var(--dvc-text-primary);
+        margin: 0;
+      }
+    }
+
+    .view-all-btn {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--dvc-primary);
+
+      &:hover {
+        color: var(--dvc-accent);
+      }
+    }
+  }
+
+  ::ng-deep .ant-table-thead > tr > th {
+    background: #FAF7F2;
+    font-weight: 700;
+    color: var(--dvc-text-primary);
+  }
+
+  .code-link a {
+    color: var(--dvc-primary);
+    font-family: var(--dvc-font-mono);
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-banner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+}

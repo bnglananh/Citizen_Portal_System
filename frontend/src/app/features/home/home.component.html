@@ -1,0 +1,369 @@
+<div class="home-portal-wrapper">
+  <!-- 1. HERO SECTION & MULTI-SERVICE SEARCH CONSOLE -->
+  <section class="hero-portal-section">
+    <div class="hero-backdrop-pattern"></div>
+    <div class="hero-container">
+      <!-- National / Ward Title Badge -->
+      <div class="hero-gov-badge">
+        <i nz-icon nzType="safety-certificate" nzTheme="fill"></i>
+        <span>ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHÚ - THÀNH PHỐ HỒ CHÍ MINH</span>
+      </div>
+
+      <!-- Professional Hero Title -->
+      <h1 class="hero-main-title">
+        CỔNG DỊCH VỤ CÔNG TRỰC TUYẾN &amp; TIẾP NHẬN HỒ SƠ ĐIỆN TỬ
+      </h1>
+
+      <!-- Slogan / Subtitle -->
+      <p class="hero-subtitle">
+        Nền tảng số phục vụ Nhân dân và Doanh nghiệp &bull; Tiếp nhận, xử lý và trả kết quả thủ tục hành chính công khai, minh bạch, nhanh chóng
+      </p>
+
+      <!-- Multi-function Console Box (Tabs) -->
+      <div class="search-console-box">
+        <!-- Tab Navigation Switcher -->
+        <div class="console-tab-header">
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activeTab === 'procedure'"
+            (click)="activeTab = 'procedure'"
+          >
+            <i nz-icon nzType="search" nzTheme="outline"></i>
+            <span>Tra cứu Thủ tục Hành chính</span>
+          </button>
+
+          <button
+            type="button"
+            class="tab-btn"
+            [class.active]="activeTab === 'tracking'"
+            (click)="activeTab = 'tracking'"
+          >
+            <i nz-icon nzType="file-search" nzTheme="outline"></i>
+            <span>Tra cứu Tiến độ Hồ sơ</span>
+            <span class="tab-badge">Mới</span>
+          </button>
+        </div>
+
+        <!-- Tab Body 1: Tra cứu thủ tục -->
+        @if (activeTab === 'procedure') {
+          <div class="console-tab-body">
+            <form (ngSubmit)="submitSearch()" class="search-form-row">
+              <div class="search-input-field">
+                <i nz-icon nzType="search" class="input-icon"></i>
+                <input
+                  type="text"
+                  [(ngModel)]="searchQuery"
+                  name="searchQuery"
+                  placeholder="Nhập tên thủ tục, mã thủ tục hoặc từ khóa (VD: Khai sinh, Hộ kinh doanh, Bằng lái xe...)"
+                  class="native-search-input"
+                  autocomplete="off"
+                />
+              </div>
+              <button type="submit" class="btn-console-submit">
+                <i nz-icon nzType="search"></i>
+                <span>Tìm kiếm thủ tục</span>
+              </button>
+            </form>
+
+            <!-- Quick Popular Searches -->
+            <div class="quick-keywords-bar">
+              <span class="kw-label"><i nz-icon nzType="fire" nzTheme="fill"></i> Phổ biến:</span>
+              <div class="kw-list">
+                @for (kw of quickKeywords; track kw) {
+                  <button type="button" class="kw-chip" (click)="searchKeyword(kw)">
+                    {{ kw }}
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Tab Body 2: Tra cứu tiến độ hồ sơ -->
+        @if (activeTab === 'tracking') {
+          <div class="console-tab-body">
+            <form (ngSubmit)="submitSearch()" class="search-form-row">
+              <div class="search-input-field">
+                <i nz-icon nzType="barcode" class="input-icon"></i>
+                <input
+                  type="text"
+                  [(ngModel)]="trackingCode"
+                  name="trackingCode"
+                  placeholder="Nhập chính xác Mã số biên nhận hồ sơ (VD: HS202603001, HS202603002...)"
+                  class="native-search-input"
+                  autocomplete="off"
+                />
+              </div>
+              <button type="submit" class="btn-console-submit tracking-btn">
+                <i nz-icon nzType="file-search"></i>
+                <span>Tra cứu tiến độ</span>
+              </button>
+            </form>
+
+            <!-- Tracking Tip -->
+            <div class="tracking-tip-bar">
+              <i nz-icon nzType="info-circle" nzTheme="outline"></i>
+              <span>Mã biên nhận hồ sơ được in trên giấy hẹn tiếp nhận hoặc gửi qua tin nhắn SMS / Email khi nộp thành công.</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. REAL-TIME TRANSPARENCY & CIVIC METRICS -->
+  <section class="transparency-section">
+    <div class="portal-container">
+      <div class="metrics-grid">
+        @for (stat of stats; track stat.label) {
+          <div class="metric-card">
+            <div class="metric-icon-box" [style.color]="stat.accentColor">
+              <i nz-icon [nzType]="stat.icon" nzTheme="outline"></i>
+            </div>
+            <div class="metric-info">
+              <div class="metric-number">{{ stat.value }}</div>
+              <div class="metric-label">{{ stat.label }}</div>
+              <div class="metric-desc">{{ stat.desc }}</div>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. ESSENTIAL CIVIC SERVICE SECTORS -->
+  <section class="sectors-section">
+    <div class="portal-container">
+      <div class="section-header-block">
+        <div class="header-pre-tag">LĨNH VỰC DỊCH VỤ CÔNG</div>
+        <h2 class="section-main-title">Nhóm Dịch vụ Hành chính Công Thiết yếu</h2>
+        <p class="section-sub-desc">
+          Toàn bộ thủ tục hành chính thuộc thẩm quyền giải quyết của UBND Phường Tân Phú được phân chia theo lĩnh vực đời sống, thuận tiện cho người dân tiếp cận.
+        </p>
+      </div>
+
+      <div class="sectors-grid">
+        @for (cat of categories; track cat.id) {
+          <div class="sector-card" (click)="navigateToCategory(cat.id)">
+            <div class="sector-card-header">
+              <div class="sector-icon-circle">
+                <i nz-icon [nzType]="cat.icon" nzTheme="outline"></i>
+              </div>
+              <span class="sector-count-badge">{{ cat.count }} thủ tục</span>
+            </div>
+
+            <h3 class="sector-name">{{ cat.name }}</h3>
+            <p class="sector-desc">{{ cat.description }}</p>
+
+            <div class="sector-popular-items">
+              <div class="popular-title">Thủ tục thường gặp:</div>
+              <div class="popular-chips">
+                @for (item of cat.popularItems; track item) {
+                  <span class="item-tag">{{ item }}</span>
+                }
+              </div>
+            </div>
+
+            <div class="sector-card-footer">
+              <span class="view-link">
+                Xem thủ tục lĩnh vực này
+                <i nz-icon nzType="arrow-right" nzTheme="outline"></i>
+              </span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 4-STEP CITIZEN SERVICE ROADMAP -->
+  <section class="roadmap-section">
+    <div class="portal-container">
+      <div class="section-header-block text-white">
+        <div class="header-pre-tag text-gold">HƯỚNG DẪN CÔNG DÂN</div>
+        <h2 class="section-main-title text-white">Quy trình 4 Bước Nộp &amp; Thụ lý Hồ sơ Trực tuyến</h2>
+        <p class="section-sub-desc text-light">
+          Thực hiện thủ tục hành chính nhanh chóng ngay tại nhà chỉ với các bước đơn giản, không cần xếp hàng chờ đợi.
+        </p>
+      </div>
+
+      <div class="roadmap-steps-grid">
+        @for (step of steps; track step.step) {
+          <div class="step-card">
+            <div class="step-num-badge">{{ step.step }}</div>
+            <div class="step-icon-box">
+              <i nz-icon [nzType]="step.icon" nzTheme="outline"></i>
+            </div>
+            <h4 class="step-title">{{ step.title }}</h4>
+            <p class="step-desc">{{ step.desc }}</p>
+          </div>
+        }
+      </div>
+
+      <div class="roadmap-action-bar">
+        <a routerLink="/faq" class="btn-outline-light">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+          <span>Xem câu hỏi thường gặp &amp; video hướng dẫn</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. TOP FEATURED & HIGH-FREQUENCY PROCEDURES -->
+  <section class="featured-section">
+    <div class="portal-container">
+      <div class="section-header-row">
+        <div class="header-left">
+          <div class="header-pre-tag">DỊCH VỤ TIÊU BIỂU</div>
+          <h2 class="section-main-title">Thủ tục Trực tuyến Được Nộp Nhiều Nhất</h2>
+        </div>
+        <div class="header-right">
+          <a routerLink="/procedures" class="view-all-procedures-btn">
+            <span>Xem toàn bộ 48+ thủ tục</span>
+            <i nz-icon nzType="right" nzTheme="outline"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="featured-grid">
+        @for (proc of featuredProcedures; track proc.id) {
+          <div class="featured-card">
+            <div class="card-head">
+              <span class="proc-code-tag">{{ proc.code }}</span>
+              <span
+                class="service-level-tag"
+                [class.toan-trinh]="proc.isFullyOnline"
+                [class.mot-phan]="!proc.isFullyOnline"
+              >
+                <i nz-icon [nzType]="proc.isFullyOnline ? 'check-circle' : 'form'" nzTheme="outline"></i>
+                {{ proc.isFullyOnline ? 'DVC Toàn trình' : 'Trực tuyến một phần' }}
+              </span>
+            </div>
+
+            <h3 class="proc-title" [routerLink]="['/procedures', proc.id]">
+              {{ proc.name }}
+            </h3>
+
+            <p class="proc-desc">{{ proc.description }}</p>
+
+            <div class="proc-meta-list">
+              <div class="meta-item">
+                <i nz-icon nzType="clock-circle" class="meta-icon"></i>
+                <span class="meta-label">Thời hạn:</span>
+                <strong class="meta-val">{{ proc.processingTime }}</strong>
+              </div>
+              <div class="meta-item">
+                <i nz-icon nzType="pay-circle" class="meta-icon"></i>
+                <span class="meta-label">Lệ phí:</span>
+                <strong class="meta-val fee-highlight">{{ proc.feeText }}</strong>
+              </div>
+            </div>
+
+            <div class="proc-actions">
+              <a [routerLink]="['/procedures', proc.id]" class="btn-detail-proc">
+                Chi tiết quy trình
+              </a>
+              <button (click)="applyProcedure(proc.id)" class="btn-apply-proc">
+                <i nz-icon nzType="form"></i>
+                Nộp hồ sơ ngay
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. DIGITAL SUPPORT & AI VIRTUAL ASSISTANT PROMO -->
+  <section class="support-promo-section">
+    <div class="portal-container">
+      <div class="support-dual-grid">
+        <!-- AI Assistant Card -->
+        <div class="ai-assistant-card">
+          <div class="ai-badge">
+            <i nz-icon nzType="robot" nzTheme="outline"></i>
+            <span>TRỢ LÝ ẢO AI 24/7</span>
+          </div>
+          <h3 class="ai-title">Bạn cần hỗ trợ thành phần hồ sơ hoặc quy định pháp luật?</h3>
+          <p class="ai-desc">
+            Trợ lý AI Công dân Phường Tân Phú được huấn luyện với đầy đủ cơ sở pháp lý và hướng dẫn thủ tục hành chính, sẵn sàng tư vấn chi tiết mọi thắc mắc của bạn bất kể ngày đêm.
+          </p>
+          <div class="ai-features-row">
+            <span class="feat-item"><i nz-icon nzType="check"></i> Hướng dẫn thành phần hồ sơ</span>
+            <span class="feat-item"><i nz-icon nzType="check"></i> Tra cứu mức lệ phí niêm yết</span>
+            <span class="feat-item"><i nz-icon nzType="check"></i> Giải đáp không cần chờ đợi</span>
+          </div>
+          <button (click)="openChatbot()" class="btn-open-chatbot">
+            <i nz-icon nzType="message" nzTheme="outline"></i>
+            <span>Trò chuyện cùng Trợ lý Ảo AI ngay</span>
+          </button>
+        </div>
+
+        <!-- Hotlines & One-stop Service Info -->
+        <div class="one-stop-card">
+          <div class="card-tag">BỘ PHẬN TIẾP NHẬN &amp; TRẢ KẾT QUẢ</div>
+          <h3 class="dept-title">Ủy ban nhân dân Phường Tân Phú</h3>
+          <p class="dept-desc">
+            Trụ sở giải quyết thủ tục hành chính trực tiếp hiện đại, thân thiện, ứng dụng công nghệ số phục vụ nhân dân.
+          </p>
+
+          <div class="contact-rows">
+            <div class="contact-item">
+              <i nz-icon nzType="environment" class="c-icon"></i>
+              <div>
+                <strong>Địa chỉ trụ sở:</strong>
+                <span>Số 560 Lũy Bán Bích, Phường Hòa Thạnh (Khu vực Phường Tân Phú), TP. Hồ Chí Minh</span>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <i nz-icon nzType="phone" class="c-icon"></i>
+              <div>
+                <strong>Đường dây nóng hỗ trợ dịch vụ công:</strong>
+                <span class="hotline-highlight">(028) 3860 6868</span>
+              </div>
+            </div>
+
+            <div class="contact-item">
+              <i nz-icon nzType="schedule" class="c-icon"></i>
+              <div>
+                <strong>Giờ tiếp nhận hồ sơ:</strong>
+                <span>Thứ Hai - Thứ Sáu: 7h30 - 11h30, 13h30 - 17h00 | Thứ Bảy: 7h30 - 11h30</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. CIVIC NOTICES & ADMINISTRATIVE REFORM GUIDANCE -->
+  <section class="notices-section">
+    <div class="portal-container">
+      <div class="section-header-block">
+        <div class="header-pre-tag">THÔNG BÁO &amp; HƯỚNG DẪN</div>
+        <h2 class="section-main-title">Thông tin Cải cách Hành chính &amp; Chuyển đổi Số</h2>
+        <p class="section-sub-desc">
+          Các chỉ đạo điều hành, cập nhật chính sách và hướng dẫn tiện ích số mới nhất từ UBND Phường Tân Phú.
+        </p>
+      </div>
+
+      <div class="notices-grid">
+        @for (notice of notices; track notice.title) {
+          <div class="notice-card">
+            <div class="notice-meta">
+              <span class="notice-tag">{{ notice.tag }}</span>
+              <span class="notice-date"><i nz-icon nzType="calendar"></i> {{ notice.date }}</span>
+            </div>
+            <h4 class="notice-title">{{ notice.title }}</h4>
+            <p class="notice-summary">{{ notice.summary }}</p>
+            <div class="notice-foot">
+              <span class="read-more">Chi tiết hướng dẫn <i nz-icon nzType="arrow-right"></i></span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </section>
+</div>

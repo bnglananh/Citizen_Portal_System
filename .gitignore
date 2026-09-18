@@ -1,44 +1,89 @@
-# See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# ==============================================================================
+# OS & System Files
+# ==============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+[Dd]esktop.ini
 
-# Compiled output
-/dist
-/tmp
-/out-tsc
-/bazel-out
-
-# Node
-/node_modules
-npm-debug.log
-yarn-error.log
-
-# IDEs and editors
+# ==============================================================================
+# IDEs & Editors
+# ==============================================================================
 .idea/
+*.iws
+*.iml
+*.ipr
 .project
 .classpath
-.c9/
-*.launch
+.factorypath
+.apt_generated
+.springBeans
+.sts4-cache
 .settings/
 *.sublime-workspace
+.history/*
+*.launch
 
-# Visual Studio Code
+# Database Clients (DBeaver, DataGrip, etc.)
+.dbeaver/
+*.dbeaver
+*.dbeaver-data/
+dbeaver-debug.log
+*.sql.bak
+
+# VS Code - keep config files but ignore local workspace state
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-!.vscode/mcp.json
-.history/*
 
-# Miscellaneous
-/.angular/cache
-.sass-cache/
-/connect.lock
-/coverage
-/libpeerconnection.log
-testem.log
-/typings
-__screenshots__/
+# ==============================================================================
+# Node & Frontend (Angular)
+# ==============================================================================
+frontend/node_modules/
+frontend/dist/
+frontend/.angular/
+frontend/.sass-cache/
+frontend/connect.lock
+frontend/coverage/
+frontend/out-tsc/
+frontend/bazel-out/
+frontend/__screenshots__/
+frontend/typings/
 
-# System files
-.DS_Store
-Thumbs.db
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log
+
+# ==============================================================================
+# Java & Backend (Maven / Spring Boot)
+# ==============================================================================
+backend/target/
+backend/bin/
+backend/*.class
+backend/.mvn/wrapper/maven-wrapper.jar
+backend/HELP.md
+backend/*.jar
+backend/*.war
+
+# ==============================================================================
+# Environment & Secrets & Uploads & Private Plans
+# ==============================================================================
+*.env
+*.env.local
+*.env.*.local
+*.local
+uploads/
+backend/uploads/
+PLAN_DU_AN_DICH_VU_CONG.md
+
+

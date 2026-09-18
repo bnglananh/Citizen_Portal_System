@@ -1,0 +1,179 @@
+<div class="procedure-detail-wrapper">
+  <!-- Breadcrumb -->
+  <nz-breadcrumb class="detail-breadcrumb">
+    <nz-breadcrumb-item><a routerLink="/">Trang chủ</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item><a routerLink="/procedures">Danh mục thủ tục</a></nz-breadcrumb-item>
+    <nz-breadcrumb-item>{{ procedure.code }}</nz-breadcrumb-item>
+  </nz-breadcrumb>
+
+  <!-- Header Card -->
+  <div class="proc-header-card">
+    <div class="header-main-info">
+      <div class="badges-row">
+        <nz-tag class="code-tag">{{ procedure.code }}</nz-tag>
+        <nz-tag class="category-tag">{{ procedure.categoryName }}</nz-tag>
+        <nz-tag class="service-type-tag">Dịch vụ công toàn trình</nz-tag>
+      </div>
+      <h1 class="proc-title">{{ procedure.name }}</h1>
+      <p class="proc-desc">{{ procedure.description }}</p>
+    </div>
+
+    <div class="header-action-panel">
+      <div class="meta-stats-grid">
+        <div class="stat-box">
+          <span class="stat-label"><i nz-icon nzType="clock-circle"></i> Thời hạn</span>
+          <span class="stat-value tabular-nums">{{ procedure.processingTimeDays }} ngày làm việc</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-label"><i nz-icon nzType="safety-certificate"></i> Phí / Lệ phí</span>
+          <span class="stat-value fee-value tabular-nums">
+            {{ procedure.feeAmount === 0 ? 'Miễn phí' : (procedure.feeAmount | number) + ' VNĐ' }}
+          </span>
+        </div>
+      </div>
+
+      <a nz-button nzType="primary" [routerLink]="['/citizen/submit-application', procedure.id]" class="btn-submit-main">
+        <i nz-icon nzType="form" nzTheme="outline"></i>
+        <span>NỘP HỒ SƠ TRỰC TUYẾN</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Content Tabs -->
+  <div class="proc-body-card">
+    <nz-tabs nzType="card" class="proc-tabs">
+      <!-- TAB 1: THÀNH PHẦN HỒ SƠ -->
+      <nz-tab nzTitle="Thành phần hồ sơ ({{ procedure.requiredDocuments.length }})">
+        <div class="tab-inner-content">
+          <!-- Guide Notice Banner -->
+          <div class="doc-guide-banner">
+            <div class="banner-icon">
+              <i nz-icon nzType="file-protect" nzTheme="outline"></i>
+            </div>
+            <div class="banner-text">
+              <h4>Hướng dẫn chuẩn bị giấy tờ & tệp đính kèm</h4>
+              <p>Công dân chuẩn bị đầy đủ các loại giấy tờ theo danh mục dưới đây trước khi thực hiện nộp hồ sơ trực tuyến:</p>
+              <div class="banner-formats">
+                <span class="format-rule">
+                  <i nz-icon nzType="check-circle" nzTheme="fill" class="text-success"></i>
+                  <span><strong>Cho phép Ảnh hoặc PDF (.pdf, .jpg, .png):</strong> CCCD, Giấy chứng sinh, Giấy kết hôn, Sổ đỏ, Giấy báo tử...</span>
+                </span>
+                <span class="format-rule">
+                  <i nz-icon nzType="exclamation-circle" nzTheme="fill" class="text-warning"></i>
+                  <span><strong>Chỉ cho phép file PDF (.pdf):</strong> Hợp đồng, Tờ khai mẫu, Bản vẽ xây dựng, Văn bản pháp lý...</span>
+                </span>
+                <span class="format-rule">
+                  <i nz-icon nzType="info-circle" nzTheme="fill" class="text-info"></i>
+                  <span>Dung lượng tối đa <strong>15MB</strong>/mỗi tệp, hình ảnh và chữ viết rõ nét, không bị mờ hay cắt góc.</span>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Document Cards List -->
+          <div class="doc-cards-list">
+            @for (doc of procedure.requiredDocuments; track doc.id || $index; let i = $index) {
+              <div class="doc-item-card" [class.is-required]="doc.isRequired">
+                <div class="doc-card-header">
+                  <div class="doc-title-group">
+                    <span class="doc-index-badge">{{ i + 1 < 10 ? '0' + (i + 1) : (i + 1) }}</span>
+                    <div class="doc-icon-box" [class.icon-pdf]="!getDocFormat(doc.documentName).includes('jpg')" [class.icon-img]="getDocFormat(doc.documentName).includes('jpg')">
+                      <i nz-icon [nzType]="getDocFormat(doc.documentName).includes('jpg') ? 'file-image' : 'file-pdf'" nzTheme="outline"></i>
+                    </div>
+                    <div class="doc-name-wrap">
+                      <h4 class="doc-name">{{ doc.documentName }}</h4>
+                      <div class="doc-chips-row">
+                        <span class="chip-nature" [class.required]="doc.isRequired" [class.optional]="!doc.isRequired">
+                          <i nz-icon [nzType]="doc.isRequired ? 'check-circle' : 'minus-circle'" nzTheme="fill"></i>
+                          {{ doc.isRequired ? 'Bắt buộc phải có' : 'Tùy chọn (nếu có)' }}
+                        </span>
+                        <span class="chip-format">
+                          <i nz-icon nzType="paper-clip"></i>
+                          Định dạng: <strong>{{ getDocFormat(doc.documentName) }}</strong>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="doc-card-body">
+                  <div class="doc-guide-box">
+                    <i nz-icon nzType="bulb" class="guide-icon"></i>
+                    <div class="guide-content">
+                      <span class="guide-label">Yêu cầu & Hướng dẫn chuẩn bị:</span>
+                      <p class="guide-text">{{ doc.description || doc.note || 'Bản chính hoặc bản sao hợp lệ được scan/chụp rõ nét đầy đủ các trang theo quy định.' }}</p>
+                    </div>
+                  </div>
+
+                  @if (doc.templateFilePath) {
+                    <div class="doc-template-download">
+                      <a [href]="doc.templateFilePath" target="_blank" class="btn-download-template">
+                        <i nz-icon nzType="download"></i> Tải về biểu mẫu mẫu (.docx / .pdf)
+                      </a>
+                    </div>
+                  }
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </nz-tab>
+
+      <!-- TAB 2: TRÌNH TỰ THỰC HIỆN -->
+      <nz-tab nzTitle="Trình tự thực hiện">
+        <div class="tab-inner-content">
+          <div class="steps-flow">
+            @if (procedure.implementationSteps) {
+              <div class="legal-text-pre">{{ procedure.implementationSteps }}</div>
+            } @else {
+              <div class="step-flow-item">
+                <div class="step-num">1</div>
+                <div class="step-desc">
+                  <h4>Bước 1: Nộp hồ sơ trực tuyến</h4>
+                  <p>Người yêu cầu đăng nhập tài khoản Cổng Dịch vụ công hoặc VNeID, điền thông tin vào biểu mẫu tương tác và đính kèm bản sao các giấy tờ theo quy định.</p>
+                </div>
+              </div>
+
+              <div class="step-flow-item">
+                <div class="step-num">2</div>
+                <div class="step-desc">
+                  <h4>Bước 2: Tiếp nhận và kiểm tra hồ sơ</h4>
+                  <p>Cán bộ Bộ phận Tiếp nhận & Trả kết quả kiểm tra tính hợp lệ và đầy đủ của hồ sơ, cấp mã số hồ sơ và giấy hẹn trả kết quả.</p>
+                </div>
+              </div>
+
+              <div class="step-flow-item">
+                <div class="step-num">3</div>
+                <div class="step-desc">
+                  <h4>Bước 3: Thẩm định và xử lý chuyên môn</h4>
+                  <p>Công chức phụ trách chuyên môn thẩm định hồ sơ, xác minh thông tin trên Cơ sở dữ liệu quốc gia và giải quyết theo đúng quy trình.</p>
+                </div>
+              </div>
+
+              <div class="step-flow-item">
+                <div class="step-num">4</div>
+                <div class="step-desc">
+                  <h4>Bước 4: Trả kết quả</h4>
+                  <p>Trả kết quả bản điện tử ký số qua Cổng Dịch vụ công hoặc chuyển phát bản giấy qua bưu điện theo yêu cầu của công dân.</p>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      </nz-tab>
+
+      <!-- TAB 3: ĐIỀU KIỆN & CĂN CỨ PHÁP LÝ -->
+      <nz-tab nzTitle="Điều kiện & Căn cứ pháp lý">
+        <div class="tab-inner-content">
+          <div class="legal-block">
+            <h4>Yêu cầu, điều kiện thực hiện</h4>
+            <div class="legal-text-pre">{{ procedure.conditions || 'Công dân có tài khoản định danh điện tử mức độ 2 trên VNeID hoặc tài khoản Cổng Dịch vụ công Quốc gia.' }}</div>
+
+            <h4 class="mt-4">Căn cứ pháp lý</h4>
+            <div class="legal-text-pre">{{ procedure.legalBasis || 'Theo các văn bản quy phạm pháp luật chuyên ngành hiện hành.' }}</div>
+          </div>
+        </div>
+      </nz-tab>
+    </nz-tabs>
+  </div>
+</div>

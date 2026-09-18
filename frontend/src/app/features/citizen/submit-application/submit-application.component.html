@@ -1,0 +1,290 @@
+<div class="submit-app-container">
+  @if (!isCompleted) {
+    <!-- Header Summary Box -->
+    <div class="proc-summary-banner">
+      <div class="summary-left">
+        <span class="banner-sub">NỘP HỒ SƠ TRỰC TUYẾN</span>
+        <h2 class="banner-title">{{ procedure.name }}</h2>
+        <div class="banner-meta">
+          <span><i nz-icon nzType="safety-certificate"></i> Mã TTHC: <strong>{{ procedure.code }}</strong></span>
+          <span><i nz-icon nzType="clock-circle"></i> Thời hạn xử lý: <strong>{{ procedure.processingTimeDays }} ngày</strong></span>
+          <span><i nz-icon nzType="dollar"></i> Phí: <strong>{{ procedure.feeAmount === 0 ? 'Miễn phí' : (procedure.feeAmount | number) + ' đ' }}</strong></span>
+        </div>
+      </div>
+      <div class="summary-right">
+        <a nz-button nzType="text" [routerLink]="['/procedures', procedure.id]" class="back-guide-btn">
+          <i nz-icon nzType="info-circle"></i> Xem lại hướng dẫn
+        </a>
+      </div>
+    </div>
+
+    <!-- Steps Progress Bar -->
+    <div class="steps-nav-card">
+      <nz-steps [nzCurrent]="currentStep">
+        <nz-step nzTitle="Thông tin người nộp"></nz-step>
+        <nz-step nzTitle="Nội dung hồ sơ"></nz-step>
+        <nz-step nzTitle="Đính kèm giấy tờ"></nz-step>
+        <nz-step nzTitle="Xác nhận & Nộp"></nz-step>
+      </nz-steps>
+    </div>
+
+    <!-- Step Contents Card -->
+    <div class="step-content-card">
+      <!-- STEP 1: THÔNG TIN NGƯỜI NỘP -->
+      @if (currentStep === 0) {
+        <div class="step-pane">
+          <div class="pane-title">
+            <i nz-icon nzType="user" class="pane-icon"></i>
+            <div>
+              <h3>1. Thông tin người nộp hồ sơ</h3>
+              <p>Thông tin được tự động trích xuất từ tài khoản định danh VNeID</p>
+            </div>
+          </div>
+
+          <form nz-form [formGroup]="step1Form" nzLayout="vertical" class="form-grid">
+            <div class="form-row-2">
+              <nz-form-item>
+                <nz-form-label nzRequired>Họ và tên người nộp</nz-form-label>
+                <nz-form-control nzErrorTip="Vui lòng nhập họ và tên">
+                  <input type="text" nz-input formControlName="citizenName" />
+                </nz-form-control>
+              </nz-form-item>
+
+              <nz-form-item>
+                <nz-form-label nzRequired>Số CCCD / Định danh</nz-form-label>
+                <nz-form-control nzErrorTip="CCCD phải gồm 12 số">
+                  <input type="text" nz-input formControlName="citizenIdCard" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <div class="form-row-2">
+              <nz-form-item>
+                <nz-form-label nzRequired>Số điện thoại liên hệ</nz-form-label>
+                <nz-form-control nzErrorTip="Vui lòng nhập số điện thoại">
+                  <input type="text" nz-input formControlName="citizenPhone" />
+                </nz-form-control>
+              </nz-form-item>
+
+              <nz-form-item>
+                <nz-form-label nzRequired>Địa chỉ Email</nz-form-label>
+                <nz-form-control nzErrorTip="Email không hợp lệ">
+                  <input type="email" nz-input formControlName="citizenEmail" />
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+
+            <nz-form-item>
+              <nz-form-label nzRequired>Địa chỉ thường trú / Nơi cư trú</nz-form-label>
+              <nz-form-control nzErrorTip="Vui lòng nhập địa chỉ cư trú">
+                <input type="text" nz-input formControlName="citizenAddress" />
+              </nz-form-control>
+            </nz-form-item>
+          </form>
+        </div>
+      }
+
+      <!-- STEP 2: NỘI DUNG HỒ SƠ -->
+      @if (currentStep === 1) {
+        <div class="step-pane">
+          <div class="pane-title">
+            <i nz-icon nzType="form" class="pane-icon"></i>
+            <div>
+              <h3>2. Nội dung yêu cầu giải quyết</h3>
+              <p>Chọn cơ quan tiếp nhận và nhập chi tiết nội dung đề nghị</p>
+            </div>
+          </div>
+
+          <form nz-form [formGroup]="step2Form" nzLayout="vertical">
+            <nz-form-item>
+              <nz-form-label nzRequired>Cơ quan / Đơn vị tiếp nhận giải quyết</nz-form-label>
+              <nz-form-control nzErrorTip="Vui lòng chọn cơ quan tiếp nhận">
+                <nz-select formControlName="receivingOffice">
+                  <nz-option nzValue="Ủy ban nhân dân Phường Tân Phú, TP. Hồ Chí Minh" nzLabel="Ủy ban nhân dân Phường Tân Phú, TP. Hồ Chí Minh"></nz-option>
+                  <nz-option nzValue="Bộ phận Tiếp nhận & Trả kết quả Phường Tân Phú" nzLabel="Bộ phận Tiếp nhận & Trả kết quả Phường Tân Phú"></nz-option>
+                </nz-select>
+
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label nzRequired>Nội dung chi tiết yêu cầu giải quyết</nz-form-label>
+              <nz-form-control nzErrorTip="Vui lòng nhập nội dung đề nghị">
+                <textarea rows="4" nz-input formControlName="requestDetails" placeholder="Mô tả tóm tắt nội dung đề nghị thực hiện thủ tục..."></textarea>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label nzRequired>Hình thức nhận kết quả</nz-form-label>
+              <nz-form-control>
+                <nz-select formControlName="receiveMethod">
+                  <nz-option nzValue="ONLINE_AND_POST" nzLabel="Bản điện tử qua Cổng DVC + Nhận bản giấy qua Bưu điện chuyển phát"></nz-option>
+                  <nz-option nzValue="ONLINE_ONLY" nzLabel="Chỉ nhận Bản điện tử ký số qua tài khoản Cổng DVC"></nz-option>
+                  <nz-option nzValue="DIRECT" nzLabel="Nhận trực tiếp tại cơ quan UBND Phường"></nz-option>
+                </nz-select>
+              </nz-form-control>
+            </nz-form-item>
+
+            <nz-form-item>
+              <nz-form-label>Địa chỉ nhận kết quả bản giấy qua bưu điện</nz-form-label>
+              <nz-form-control>
+                <input type="text" nz-input formControlName="deliveryAddress" />
+              </nz-form-control>
+            </nz-form-item>
+          </form>
+        </div>
+      }
+
+      <!-- STEP 3: ĐÍNH KÈM TÀI LIỆU -->
+      @if (currentStep === 2) {
+        <div class="step-pane">
+          <div class="pane-title">
+            <i nz-icon nzType="upload" class="pane-icon"></i>
+            <div>
+              <h3>3. Đính kèm thành phần hồ sơ</h3>
+              <p>Hệ thống tự động tạo các mục tải tệp theo đúng danh mục giấy tờ bắt buộc của thủ tục này</p>
+            </div>
+          </div>
+
+          <div class="required-docs-reminder">
+            <div class="reminder-header">
+              <i nz-icon nzType="info-circle" style="color: #2F5D45; font-size: 1.1rem;"></i>
+              <div>
+                <strong>Quy định định dạng tệp tải lên:</strong>
+                <p style="margin: 0.25rem 0 0; font-size: 0.82rem; color: #555;">
+                  • <strong>Chỉ cho phép PDF:</strong> Hợp đồng, Đơn / Tờ khai, Bản vẽ xây dựng, Văn bản pháp lý / Biên bản.<br/>
+                  • <strong>Cho phép PDF, JPG, PNG:</strong> Căn cước công dân (CCCD), Sổ đỏ, Giấy chứng sinh, Giấy báo tử, Trích lục hộ tịch, Ảnh hiện trạng...<br/>
+                  • Dung lượng tối đa: <strong>15MB</strong> / mỗi tệp.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="doc-upload-grid">
+            @for (doc of procedure.requiredDocuments; track doc.id || $index) {
+              <div class="doc-upload-item">
+                <app-file-uploader
+                  [documentName]="doc.documentName"
+                  [isRequired]="doc.isRequired !== false && doc.required !== false"
+                  [description]="doc.note || ('Định dạng cho phép: ' + (doc.allowedExtensions?.join(', ') || '.pdf, .jpg, .png'))"
+                  [accept]="doc.allowedExtensions ? doc.allowedExtensions.join(',') : '.pdf,.jpg,.jpeg,.png'"
+                  (fileChange)="onDocFileChange(doc, $event)"
+                ></app-file-uploader>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- STEP 4: XÁC NHẬN & NỘP HỒ SƠ -->
+      @if (currentStep === 3) {
+        <div class="step-pane">
+          <div class="pane-title">
+            <i nz-icon nzType="check-circle" class="pane-icon"></i>
+            <div>
+              <h3>4. Kiểm tra thông tin & Cam kết nộp hồ sơ</h3>
+              <p>Vui lòng rà soát lại toàn bộ thông tin trước khi gửi phê duyệt</p>
+            </div>
+          </div>
+
+          <nz-descriptions nzTitle="Thông tin người nộp hồ sơ" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }" class="mb-4">
+            <nz-descriptions-item nzTitle="Họ và tên">{{ step1Form.value.citizenName }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Số CCCD">{{ step1Form.value.citizenIdCard }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Số điện thoại">{{ step1Form.value.citizenPhone }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Email">{{ step1Form.value.citizenEmail }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Địa chỉ thường trú" [nzSpan]="2">{{ step1Form.value.citizenAddress }}</nz-descriptions-item>
+          </nz-descriptions>
+
+          <nz-descriptions nzTitle="Nội dung yêu cầu giải quyết" nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }" class="mb-4">
+            <nz-descriptions-item nzTitle="Thủ tục hành chính" [nzSpan]="2"><strong>{{ procedure.name }} ({{ procedure.code }})</strong></nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Cơ quan tiếp nhận" [nzSpan]="2">{{ step2Form.value.receivingOffice }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Nội dung đề nghị" [nzSpan]="2">{{ step2Form.value.requestDetails }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Hình thức nhận kết quả">{{ step2Form.value.receiveMethod }}</nz-descriptions-item>
+            <nz-descriptions-item nzTitle="Địa chỉ chuyển phát">{{ step2Form.value.deliveryAddress }}</nz-descriptions-item>
+          </nz-descriptions>
+
+          <nz-descriptions nzTitle="Tài liệu đính kèm ({{ uploadedDocuments.length }} tệp)" nzBordered [nzColumn]="1" class="mb-4">
+            <nz-descriptions-item nzTitle="Danh sách tệp đã tải">
+              <ul class="summary-doc-list">
+                @for (file of uploadedDocuments; track file.name) {
+                  <li>
+                    <i nz-icon nzType="paper-clip"></i>
+                    <strong>{{ file.docName }}:</strong> {{ file.name }} ({{ (file.size / 1024 / 1024).toFixed(2) }} MB)
+                  </li>
+                }
+              </ul>
+            </nz-descriptions-item>
+          </nz-descriptions>
+
+          <div class="commitment-box">
+            <label nz-checkbox [(ngModel)]="agreeTerms">
+              <strong>Tôi xin cam đoan:</strong> Toàn bộ các thông tin và tài liệu đính kèm khai báo trong hồ sơ này là hoàn toàn chính xác, đúng sự thật. Nếu sai phạm tôi xin hoàn toàn chịu trách nhiệm trước pháp luật.
+            </label>
+          </div>
+        </div>
+      }
+
+      <!-- Step Navigation Buttons -->
+      <div class="step-actions">
+        @if (currentStep > 0) {
+          <button nz-button nzType="default" (click)="prevStep()" class="btn-prev">
+            <i nz-icon nzType="left"></i> Quay lại bước trước
+          </button>
+        }
+
+        <div class="action-spacer"></div>
+
+        @if (currentStep < 3) {
+          <button nz-button nzType="primary" (click)="nextStep()" class="btn-next">
+            Tiếp tục bước tiếp theo <i nz-icon nzType="right"></i>
+          </button>
+        } @else {
+          <button
+            nz-button
+            nzType="primary"
+            nzSize="large"
+            [nzLoading]="isSubmitting"
+            (click)="submitApplication()"
+            class="btn-submit-final"
+          >
+            <i nz-icon nzType="send"></i> GỬI HỒ SƠ CHÍNH THỨC
+          </button>
+        }
+      </div>
+    </div>
+  } @else {
+    <!-- RESULT SUCCESS SCREEN -->
+    <div class="result-success-card">
+      <nz-result
+        nzStatus="success"
+        nzTitle="HỒ SƠ ĐÃ ĐƯỢC GỬI THÀNH CÔNG!"
+        [nzSubTitle]="'Mã số hồ sơ của bạn: ' + generatedAppCode + '. Hệ thống đã gửi tin nhắn xác nhận tới số điện thoại và email của bạn.'"
+      >
+        <div nz-result-extra class="result-action-btns">
+          <a nz-button nzType="primary" [routerLink]="['/citizen/applications']">
+            <i nz-icon nzType="file-text"></i> Xem danh sách hồ sơ của tôi
+          </a>
+          <a nz-button nzType="default" [routerLink]="['/tracking']" [queryParams]="{ code: generatedAppCode }">
+            <i nz-icon nzType="search"></i> Tra cứu tiến độ hồ sơ
+          </a>
+          <a nz-button nzType="text" routerLink="/procedures">
+            Về danh mục thủ tục
+          </a>
+        </div>
+      </nz-result>
+
+      <!-- Optional QR Payment Box on Submit Success -->
+      @if (procedure.feeAmount && procedure.feeAmount > 0) {
+        <div class="submit-qr-section" style="max-width: 780px; margin: 1.5rem auto 0; text-align: left;">
+          <app-qr-payment
+            [applicationCode]="generatedAppCode"
+            [procedureName]="procedure.name"
+            [feeAmount]="procedure.feeAmount"
+            [citizenName]="step1Form.value.citizenName"
+            mode="card"
+          ></app-qr-payment>
+        </div>
+      }
+    </div>
+  }
+</div>

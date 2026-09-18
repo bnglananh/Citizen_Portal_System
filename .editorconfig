@@ -1,12 +1,19 @@
-# Editor configuration, see https://editorconfig.org
+# EditorConfig configuration: https://editorconfig.org
 root = true
 
 [*]
 charset = utf-8
 indent_style = space
 indent_size = 2
+end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
+
+[*.{java,groovy}]
+indent_size = 4
+
+[*.{ts,js,json,html,css,scss,yaml,yml}]
+indent_size = 2
 
 [*.ts]
 quote_type = single
@@ -15,3 +22,6 @@ ij_typescript_use_double_quotes = false
 [*.md]
 max_line_length = off
 trim_trailing_whitespace = false
+
+[*.xml]
+indent_size = 4

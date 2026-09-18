@@ -1,0 +1,76 @@
+.dvc-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  line-height: 1.4;
+  white-space: nowrap;
+
+  .status-icon {
+    font-size: 13px;
+  }
+
+  &.size-small {
+    padding: 1px 6px;
+    font-size: 12px;
+    .status-icon { font-size: 11px; }
+  }
+
+  &.size-large {
+    padding: 5px 14px;
+    font-size: 14px;
+    .status-icon { font-size: 15px; }
+  }
+
+  &.status-draft {
+    background-color: var(--status-draft-bg);
+    color: var(--status-draft-text);
+    border-color: var(--status-draft-border);
+  }
+
+  &.status-submitted {
+    background-color: var(--status-submitted-bg);
+    color: var(--status-submitted-text);
+    border-color: var(--status-submitted-border);
+  }
+
+  &.status-received {
+    background-color: var(--status-received-bg);
+    color: var(--status-received-text);
+    border-color: var(--status-received-border);
+  }
+
+  &.status-processing {
+    background-color: var(--status-processing-bg);
+    color: var(--status-processing-text);
+    border-color: var(--status-processing-border);
+  }
+
+  &.status-revision {
+    background-color: var(--status-revision-bg);
+    color: var(--status-revision-text);
+    border-color: var(--status-revision-border);
+  }
+
+  &.status-resubmitted {
+    background-color: var(--status-resubmitted-bg);
+    color: var(--status-resubmitted-text);
+    border-color: var(--status-resubmitted-border);
+  }
+
+  &.status-completed {
+    background-color: var(--status-completed-bg);
+    color: var(--status-completed-text);
+    border-color: var(--status-completed-border);
+  }
+
+  &.status-rejected {
+    background-color: var(--status-rejected-bg);
+    color: var(--status-rejected-text);
+    border-color: var(--status-rejected-border);
+  }
+}

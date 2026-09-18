@@ -1,0 +1,238 @@
+/* Global Design System Variables & Utilities */
+:root {
+  /* Core Palette */
+  --color-bg-primary: #F3EEE4;
+  --color-bg-card: #FFFFFF;
+  --color-bg-subtle: #F8F5EE;
+  --color-bg-hover: #FAF7F0;
+
+  --color-text-primary: #1C1C1A;
+  --color-text-secondary: #5C5B56;
+  --color-text-muted: #8C8A82;
+
+  --color-brand-primary: #2F5D45;
+  --color-brand-primary-hover: #264B38;
+  --color-brand-primary-light: #EBF3EE;
+  
+  --color-brand-accent: #C99A3C;
+  --color-brand-accent-hover: #B58830;
+  --color-brand-accent-light: #FAF3E3;
+
+  --color-border: #E2DDD2;
+  --color-border-subtle: #ECE8DE;
+
+  /* DVC Global Aliases */
+  --dvc-primary: #2F5D45;
+  --dvc-primary-hover: #244b37;
+  --dvc-accent: #C99A3C;
+  --dvc-accent-hover: #b88a32;
+  --dvc-bg-base: #F3EEE4;
+  --dvc-bg-card: #FFFFFF;
+  --dvc-text-primary: #1C1C1A;
+  --dvc-text-secondary: #5C5B56;
+  --dvc-text-muted: #8C8A82;
+  --dvc-border-color: #E2DDD2;
+  --dvc-error: #9E2A2B;
+  --dvc-radius-sm: 6px;
+  --dvc-radius-md: 10px;
+  --dvc-radius-lg: 14px;
+  --dvc-shadow-sm: 0 1px 3px rgba(28, 28, 26, 0.06);
+  --dvc-shadow-md: 0 4px 12px rgba(28, 28, 26, 0.08);
+  --dvc-shadow-lg: 0 8px 24px rgba(28, 28, 26, 0.12);
+  --dvc-font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+
+
+  /* Semantic Status Colors */
+  --status-draft-bg: #F0EFEA;
+  --status-draft-text: #686660;
+  --status-draft-border: #DCDAD4;
+
+  --status-submitted-bg: #EAF2FA;
+  --status-submitted-text: #1B5E91;
+  --status-submitted-border: #BAD6F0;
+
+  --status-received-bg: #EFEAFC;
+  --status-received-text: #4A2CA0;
+  --status-received-border: #D2C5F7;
+
+  --status-processing-bg: #FAF3E3;
+  --status-processing-text: #8C6314;
+  --status-processing-border: #EED9A7;
+
+  --status-revision-bg: #FAEDE3;
+  --status-revision-text: #A04A15;
+  --status-revision-border: #F2CBAD;
+
+  --status-resubmitted-bg: #E6F5F5;
+  --status-resubmitted-text: #156D6D;
+  --status-resubmitted-border: #B2E4E4;
+
+  --status-rejected-bg: #F9EAE8;
+  --status-rejected-text: #9E2A2B;
+  --status-rejected-border: #EEBEB9;
+
+  --status-completed-bg: #EBF3EE;
+  --status-completed-text: #1E4E36;
+  --status-completed-border: #BED8C7;
+
+  /* Shadows */
+  --shadow-subtle: 0 1px 3px rgba(28, 28, 26, 0.05), 0 1px 2px rgba(28, 28, 26, 0.03);
+  --shadow-card: 0 4px 12px rgba(28, 28, 26, 0.06);
+  --shadow-floating: 0 8px 24px rgba(47, 93, 69, 0.15);
+
+  /* Transitions */
+  --transition-fast: all 0.18s ease-out;
+  --transition-normal: all 0.25s ease-out;
+}
+
+/* Global Reset & Typography */
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Tabular numbers for IDs, codes, dates and stats */
+.tabular-nums, .application-code, .stat-number, .badge-count {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Custom Card Style */
+.dvc-card {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-subtle);
+  transition: var(--transition-fast);
+
+  &:hover {
+    box-shadow: var(--shadow-card);
+    border-color: #D6D0C3;
+  }
+}
+
+/* Official Header Typography */
+.official-header {
+  font-weight: 600;
+  color: var(--color-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.official-sub {
+  font-size: 13px;
+  color: var(--color-text-secondary);
+}
+
+/* Micro-interaction Animation Classes */
+.fade-in {
+  animation: fadeIn 0.25s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Timeline subtle pulse for latest milestone */
+@keyframes timelinePulse {
+  0% { box-shadow: 0 0 0 0 rgba(47, 93, 69, 0.4); }
+  70% { box-shadow: 0 0 0 6px rgba(47, 93, 69, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(47, 93, 69, 0); }
+}
+
+.timeline-current-pulse {
+  animation: timelinePulse 2s infinite ease-in-out;
+}
+
+/* Floating AI Chatbot Button */
+.chatbot-fab-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+  background-color: var(--color-brand-primary);
+  color: #FFFFFF;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-floating);
+  cursor: pointer;
+  border: none;
+  transition: var(--transition-fast);
+
+  &:hover {
+    background-color: var(--color-brand-primary-hover);
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+/* Ant Design Tag & Badge Enhancements */
+.ant-tag {
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.8125rem;
+  padding: 2px 8px;
+  border-width: 1px;
+  line-height: 1.4;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ant-tag-success, .ant-tag-green {
+  background: #EBF3EE !important;
+  border-color: #BED8C7 !important;
+  color: #1E4E36 !important;
+}
+
+.ant-tag-blue {
+  background: #EAF2FA !important;
+  border-color: #BAD6F0 !important;
+  color: #1B5E91 !important;
+}
+
+.ant-tag-gold, .ant-tag-warning {
+  background: #FAF3E3 !important;
+  border-color: #EED9A7 !important;
+  color: #8C6314 !important;
+}
+
+.ant-tag-red, .ant-tag-error {
+  background: #F9EAE8 !important;
+  border-color: #EEBEB9 !important;
+  color: #9E2A2B !important;
+}
+
+.ant-tag-default {
+  background: #F0EFEA !important;
+  border-color: #DCDAD4 !important;
+  color: #686660 !important;
+}
+
+/* Accessibility: Respect Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

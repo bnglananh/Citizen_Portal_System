@@ -1,0 +1,153 @@
+<div class="procedure-page-wrapper">
+  <!-- Hero Search Banner (Full-bleed) -->
+  <section class="hero-search-section">
+    <div class="hero-content">
+      <span class="hero-sub">ỦY BAN NHÂN DÂN PHƯỜNG TÂN PHÚ - TP. HỒ CHÍ MINH</span>
+      <h1 class="hero-title">DANH MỤC THỦ TỤC HÀNH CHÍNH CÔNG ĐIỆN TỬ</h1>
+      <p class="hero-desc">
+        Hệ thống tra cứu quy chuẩn thành phần hồ sơ, trình tự tiếp nhận và nộp hồ sơ trực tuyến tại UBND Phường Tân Phú nhanh chóng, minh bạch.
+      </p>
+
+
+      <!-- Main Search Box -->
+      <div class="search-input-wrapper">
+        <div class="search-field-box">
+          <i nz-icon nzType="search" class="search-hero-icon"></i>
+          <input
+            type="text"
+            placeholder="Nhập tên thủ tục, từ khóa, mã thủ tục (VD: Khai sinh, Giấy phép lái xe...)"
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="filterProcedures()"
+            class="native-hero-input"
+          />
+        </div>
+        <button nz-button nzType="primary" (click)="filterProcedures()" class="btn-search-hero">
+          Tìm kiếm
+        </button>
+      </div>
+
+      <!-- Quick Fast Links -->
+      <div class="quick-keywords">
+        <span class="kw-label">Tìm kiếm nhiều:</span>
+        <button class="kw-btn" (click)="searchQuery = 'Khai sinh'; filterProcedures()">Đăng ký khai sinh</button>
+        <button class="kw-btn" (click)="searchQuery = 'lái xe'; filterProcedures()">Đổi bằng lái xe</button>
+        <button class="kw-btn" (click)="searchQuery = 'kinh doanh'; filterProcedures()">Hộ kinh doanh</button>
+        <button class="kw-btn" (click)="searchQuery = 'lý lịch'; filterProcedures()">Lý lịch tư pháp</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Filter & Procedure Grid Area -->
+  <section class="procedures-container">
+    <!-- Category Filter Bar -->
+    <div class="category-filter-bar">
+      <div class="category-pills">
+        <button
+          class="cat-pill"
+          [class.active]="selectedCategory === null"
+          (click)="selectCategory(null)"
+        >
+          <i nz-icon nzType="appstore" nzTheme="outline"></i>
+          <span>Tất cả lĩnh vực</span>
+        </button>
+
+        @for (cat of categories; track cat.id) {
+          <button
+            class="cat-pill"
+            [class.active]="selectedCategory === cat.id"
+            (click)="selectCategory(cat.id)"
+          >
+            <i nz-icon [nzType]="cat.icon" nzTheme="outline"></i>
+            <span>{{ cat.name }}</span>
+          </button>
+        }
+      </div>
+
+      <div class="results-count">
+        Tìm thấy <strong>{{ filteredProcedures.length }}</strong> thủ tục hành chính
+      </div>
+    </div>
+
+    <!-- Procedures Grid List -->
+    @if (filteredProcedures.length > 0) {
+      <div class="procedure-grid">
+        @for (proc of pagedProcedures; track proc.id) {
+          <div class="procedure-card">
+            <div class="card-top">
+              <div class="proc-badges">
+                <nz-tag class="code-badge">{{ proc.code }}</nz-tag>
+                <nz-tag class="category-badge">{{ proc.categoryName }}</nz-tag>
+              </div>
+              <h3 class="proc-title">
+                <a [routerLink]="['/procedures', proc.id]">{{ proc.name }}</a>
+              </h3>
+              <p class="proc-description">{{ proc.description }}</p>
+            </div>
+
+            <div class="card-meta">
+              <div class="meta-item">
+                <i nz-icon nzType="clock-circle" nzTheme="outline"></i>
+                <div class="meta-text">
+                  <span class="meta-label">Thời hạn giải quyết</span>
+                  <span class="meta-val tabular-nums">{{ proc.processingTimeDays }} ngày làm việc</span>
+                </div>
+              </div>
+
+              <div class="meta-item">
+                <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+                <div class="meta-text">
+                  <span class="meta-label">Phí / Lệ phí</span>
+                  <span class="meta-val fee-val tabular-nums">
+                    {{ proc.feeAmount === 0 ? 'Miễn phí' : (proc.feeAmount | number) + ' đ' }}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <a nz-button nzType="default" [routerLink]="['/procedures', proc.id]" class="btn-detail" title="Xem hướng dẫn chi tiết thủ tục">
+                <i nz-icon nzType="eye" nzTheme="outline"></i>
+                <span>Xem chi tiết</span>
+              </a>
+              <a nz-button nzType="primary" [routerLink]="['/citizen/submit-application', proc.id]" class="btn-apply" title="Nộp hồ sơ trực tuyến">
+                <i nz-icon nzType="form" nzTheme="outline"></i>
+                <span>Nộp trực tuyến</span>
+              </a>
+            </div>
+          </div>
+        }
+      </div>
+
+      <!-- Pagination Box -->
+      @if (filteredProcedures.length > pageSize) {
+        <div class="procedure-pagination-box">
+          <nz-pagination
+            [nzPageIndex]="pageIndex"
+            [nzPageSize]="pageSize"
+            [nzTotal]="filteredProcedures.length"
+            [nzShowSizeChanger]="true"
+            [nzPageSizeOptions]="[6, 9, 12, 24]"
+            [nzShowTotal]="procTotalTpl"
+            (nzPageIndexChange)="onPageIndexChange($event)"
+            (nzPageSizeChange)="onPageSizeChange($event)"
+          ></nz-pagination>
+          <ng-template #procTotalTpl let-total>
+            Hiển thị {{ pagedProcedures.length }}/{{ total }} thủ tục
+          </ng-template>
+        </div>
+      }
+    } @else {
+      <div class="empty-state-box">
+        <nz-empty
+          nzNotFoundImage="simple"
+          nzNotFoundContent="Không tìm thấy thủ tục hành chính phù hợp với từ khóa tìm kiếm"
+        >
+        </nz-empty>
+        <button nz-button nzType="default" (click)="searchQuery = ''; selectedCategory = null; filterProcedures()">
+          Xóa bộ lọc
+        </button>
+      </div>
+    }
+  </section>
+</div>
+

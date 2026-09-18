@@ -1,0 +1,41 @@
+<div class="timeline-container">
+  <nz-timeline *ngIf="historyList && historyList.length > 0; else emptyTimeline">
+    <nz-timeline-item 
+      *ngFor="let item of historyList; let last = last; let i = index"
+      [nzColor]="getDotColor(item.toStatus, last)"
+      [class.latest-item]="last"
+    >
+      <ng-template #customDot>
+        <span class="custom-timeline-dot" [class.pulse-active]="last">
+          <span nz-icon [nzType]="getDotIcon(item.toStatus)" class="dot-icon"></span>
+        </span>
+      </ng-template>
+
+      <div class="timeline-card" [class.highlight-card]="last">
+        <div class="timeline-header">
+          <span class="action-title">{{ item.actionName || item.toStatus }}</span>
+          <span class="action-time tabular-nums">{{ item.actionTime ? (item.actionTime | date:'dd/MM/yyyy HH:mm') : item.createdAt }}</span>
+        </div>
+        
+        <div class="timeline-actor" *ngIf="item.actionByUserFullName || item.actionBy">
+          <span nz-icon nzType="user" class="actor-icon"></span>
+          <span>Thực hiện bởi: <strong>{{ item.actionByUserFullName || item.actionBy }}</strong></span>
+        </div>
+
+        <div class="timeline-comment" *ngIf="item.comments || item.comment">
+          <div class="comment-bubble">
+            <span nz-icon nzType="message" class="comment-icon"></span>
+            <span>{{ item.comments || item.comment }}</span>
+          </div>
+        </div>
+      </div>
+    </nz-timeline-item>
+  </nz-timeline>
+
+  <ng-template #emptyTimeline>
+    <div class="empty-state">
+      <span nz-icon nzType="info-circle" class="empty-icon"></span>
+      <span>Chưa có nhật ký xử lý nào được ghi nhận.</span>
+    </div>
+  </ng-template>
+</div>

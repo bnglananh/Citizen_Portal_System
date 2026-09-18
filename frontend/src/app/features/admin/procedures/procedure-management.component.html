@@ -1,0 +1,203 @@
+<div class="proc-mgmt-wrapper">
+  <!-- Page Header -->
+  <div class="page-top-bar">
+    <div>
+      <h1 class="page-title">Quản lý Danh mục Thủ tục Hành chính</h1>
+      <p class="page-desc">Cấu hình biểu mẫu, thời hạn giải quyết, mức phí và tài liệu yêu cầu động</p>
+    </div>
+    <button nz-button nzType="primary" (click)="openAddModal()" class="btn-add-proc">
+      <i nz-icon nzType="plus"></i> Thêm thủ tục mới
+    </button>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="filter-flex">
+      <div class="search-box">
+        <label>Tìm kiếm thủ tục</label>
+        <nz-input-wrapper>
+          <span nzInputPrefix><i nz-icon nzType="search"></i></span>
+          <input
+            type="text"
+            nz-input
+            placeholder="Mã thủ tục, tên thủ tục..."
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="filterProcedures()"
+          />
+        </nz-input-wrapper>
+      </div>
+
+      <div class="cat-filter-box">
+        <label>Lĩnh vực</label>
+        <nz-select [(ngModel)]="selectedCategoryFilter" (ngModelChange)="filterProcedures()" class="w-100">
+          <nz-option nzValue="ALL" nzLabel="-- Tất cả lĩnh vực --"></nz-option>
+          @for (cat of categories; track cat.id) {
+            <nz-option [nzValue]="cat.id" [nzLabel]="cat.name"></nz-option>
+          }
+        </nz-select>
+      </div>
+
+      <button nz-button nzType="default" (click)="searchQuery = ''; selectedCategoryFilter = 'ALL'; filterProcedures()" class="btn-refresh">
+        <i nz-icon nzType="reload"></i> Làm mới
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <nz-table
+      #procTable
+      [nzData]="filteredProcedures"
+      [nzPageSize]="10"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[5, 10, 20, 50]"
+      [nzShowQuickJumper]="true"
+      [nzShowTotal]="procTotalTpl"
+      nzBordered
+      nzSize="middle"
+      class="proc-table"
+    >
+      <ng-template #procTotalTpl let-total>
+        <span class="tabular-nums font-medium text-slate-500">Tổng cộng: <strong>{{ total }}</strong> thủ tục</span>
+      </ng-template>
+      <thead>
+        <tr>
+          <th nzWidth="60px" class="text-center">STT</th>
+          <th nzWidth="150px">Mã TTHC</th>
+          <th>Tên thủ tục hành chính</th>
+          <th nzWidth="180px">Lĩnh vực</th>
+          <th nzWidth="120px" class="text-center">Thời hạn</th>
+          <th nzWidth="140px">Lệ phí</th>
+          <th nzWidth="120px" class="text-center">Số giấy tờ</th>
+          <th nzWidth="110px" class="text-center">Hiển thị</th>
+          <th nzWidth="120px" class="text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (p of procTable.data; track p.id; let i = $index) {
+          <tr>
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td><strong class="proc-code font-mono">{{ p.code }}</strong></td>
+            <td><strong>{{ p.name }}</strong></td>
+            <td><nz-tag>{{ p.categoryName }}</nz-tag></td>
+            <td class="text-center tabular-nums">{{ p.processingTimeDays }} ngày</td>
+            <td class="tabular-nums">{{ p.feeAmount === 0 ? 'Miễn phí' : (p.feeAmount | number) + ' đ' }}</td>
+            <td class="text-center"><nz-tag nzColor="blue">{{ p.requiredDocuments?.length || 0 }} tệp</nz-tag></td>
+            <td class="text-center">
+              <nz-switch [ngModel]="p.active" (ngModelChange)="toggleActive(p)" nzSize="small"></nz-switch>
+            </td>
+            <td class="text-center">
+              <button nz-button nzType="text" nzSize="small" (click)="openEditModal(p)" title="Chỉnh sửa">
+                <i nz-icon nzType="edit"></i> Sửa
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+
+  <!-- ADD / EDIT PROCEDURE MODAL -->
+  <nz-modal
+    [(nzVisible)]="isModalVisible"
+    [nzTitle]="isEditing ? 'CHỈNH SỬA THỦ TỤC HÀNH CHÍNH' : 'THÊM MỚI THỦ TỤC HÀNH CHÍNH'"
+    (nzOnCancel)="isModalVisible = false"
+    (nzOnOk)="saveProcedure()"
+    [nzOkLoading]="isLoading"
+    nzOkText="Lưu thủ tục"
+    nzCancelText="Hủy bỏ"
+    nzWidth="780px"
+  >
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="procedureForm" nzLayout="vertical" class="proc-editor-form">
+        <!-- 1. General Info -->
+        <div class="form-section-title">1. Thông tin chung thủ tục</div>
+        <div class="form-row-3">
+          <nz-form-item>
+            <nz-form-label nzRequired>Mã thủ tục</nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng nhập mã TTHC">
+              <input type="text" nz-input formControlName="code" placeholder="VD: TTHC-HT-01" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item class="span-2">
+            <nz-form-label nzRequired>Lĩnh vực phụ trách</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="categoryId">
+                @for (cat of categories; track cat.id) {
+                  <nz-option [nzValue]="cat.id" [nzLabel]="cat.name"></nz-option>
+                }
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Tên thủ tục hành chính</nz-form-label>
+          <nz-form-control nzErrorTip="Vui lòng nhập tên thủ tục">
+            <input type="text" nz-input formControlName="name" placeholder="VD: Đăng ký khai sinh trực tuyến toàn trình" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <div class="form-row-2">
+          <nz-form-item>
+            <nz-form-label nzRequired>Thời hạn giải quyết (ngày làm việc)</nz-form-label>
+            <nz-form-control nzErrorTip="Tối thiểu 1 ngày">
+              <input type="number" nz-input formControlName="processingTimeDays" min="1" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label nzRequired>Mức phí / Lệ phí (VNĐ)</nz-form-label>
+            <nz-form-control nzErrorTip="Nhập 0 nếu miễn phí">
+              <input type="number" nz-input formControlName="feeAmount" min="0" step="5000" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <nz-form-item>
+          <nz-form-label>Mô tả đối tượng & Phạm vi áp dụng</nz-form-label>
+          <nz-form-control>
+            <textarea rows="2" nz-input formControlName="description"></textarea>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- 2. Dynamic Required Documents Builder -->
+        <div class="form-section-title doc-builder-header">
+          <span>2. Cấu hình Thành phần Hồ sơ Yêu cầu (Required Documents Builder)</span>
+          <button nz-button nzType="dashed" nzSize="small" (click)="addDocumentField()" type="button" class="btn-add-doc-field">
+            <i nz-icon nzType="plus"></i> Thêm loại giấy tờ
+          </button>
+        </div>
+
+        <div formArrayName="requiredDocuments" class="doc-builder-container">
+          @for (docCtrl of requiredDocsArray.controls; track $index; let i = $index) {
+            <div [formGroupName]="i" class="doc-builder-row">
+              <div class="row-num">{{ i + 1 }}</div>
+              <div class="doc-name-input">
+                <input type="text" nz-input formControlName="documentName" placeholder="Tên loại giấy tờ (VD: Giấy chứng sinh, Bản sao CCCD...)" />
+              </div>
+              <div class="doc-note-input">
+                <input type="text" nz-input formControlName="note" placeholder="Ghi chú hướng dẫn (VD: File PDF/Ảnh scan...)" />
+              </div>
+              <div class="doc-required-check">
+                <label nz-checkbox formControlName="isRequired">Bắt buộc</label>
+              </div>
+              <button
+                nz-button
+                nzType="text"
+                nzDanger
+                (click)="removeDocumentField(i)"
+                [disabled]="requiredDocsArray.length <= 1"
+                type="button"
+                title="Xóa giấy tờ này"
+              >
+                <i nz-icon nzType="delete"></i>
+              </button>
+            </div>
+          }
+        </div>
+      </form>
+    </ng-container>
+  </nz-modal>
+</div>

@@ -1,0 +1,270 @@
+<nz-layout class="citizen-layout-wrapper">
+  <!-- Top Government Bar -->
+  <div class="gov-topbar">
+    <div class="container-fluid topbar-container">
+      <div class="topbar-left">
+        <span class="gov-badge"><i nz-icon nzType="safety-certificate" nzTheme="outline"></i> UBND PHƯỜNG TÂN PHÚ - TP. HỒ CHÍ MINH</span>
+        <span class="topbar-divider">|</span>
+        <span class="topbar-text">Hệ thống giải quyết thủ tục hành chính công trực tuyến</span>
+      </div>
+      <div class="topbar-right">
+        <span class="hotline"><i nz-icon nzType="phone" nzTheme="outline"></i> Đường dây nóng: <strong>(028) 3860 6868</strong></span>
+        @if (isStaffOrAdmin) {
+          <a class="switch-portal-link" [routerLink]="isAdmin ? '/admin/dashboard' : '/staff/dashboard'">
+            <i nz-icon nzType="appstore" nzTheme="outline"></i> Vào Cổng Nghiệp Vụ
+          </a>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Header -->
+  <nz-header class="citizen-header">
+    <div class="container-fluid header-container">
+      <!-- Brand Logo -->
+      <a class="brand-logo" routerLink="/">
+        <div class="brand-emblem">
+          <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+        </div>
+        <div class="brand-titles">
+          <span class="system-name">HỆ THỐNG DỊCH VỤ CÔNG</span>
+          <span class="system-sub">PHƯỜNG TÂN PHÚ - TP. HỒ CHÍ MINH</span>
+        </div>
+      </a>
+
+
+      <!-- Desktop Navigation Links -->
+      <nav class="desktop-nav">
+        <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-link-item">
+          <i nz-icon nzType="home" nzTheme="outline"></i>
+          <span>Trang chủ</span>
+        </a>
+        <a routerLink="/procedures" routerLinkActive="active" class="nav-link-item">
+          <i nz-icon nzType="form" nzTheme="outline"></i>
+          <span>Danh mục thủ tục</span>
+        </a>
+        <a routerLink="/tracking" routerLinkActive="active" class="nav-link-item">
+          <i nz-icon nzType="search" nzTheme="outline"></i>
+          <span>Tra cứu hồ sơ</span>
+        </a>
+        @if (authService.isAuthenticated()) {
+          <a routerLink="/citizen/applications" routerLinkActive="active" class="nav-link-item">
+            <i nz-icon nzType="file-text" nzTheme="outline"></i>
+            <span>Hồ sơ của tôi</span>
+          </a>
+        }
+        <a routerLink="/faq" routerLinkActive="active" class="nav-link-item">
+          <i nz-icon nzType="question-circle" nzTheme="outline"></i>
+          <span>Hướng dẫn & Hỏi đáp</span>
+        </a>
+      </nav>
+
+      <!-- Action Area (Notifications & User Profile & Mobile Toggle) -->
+      <div class="header-actions">
+        @if (authService.isAuthenticated()) {
+          <!-- In-app Notification Dropdown -->
+          <button nz-dropdown [nzDropdownMenu]="notiMenu" [nzPlacement]="'bottomRight'" nzTrigger="click" class="action-btn noti-btn" aria-label="Thông báo">
+            <nz-badge [nzCount]="unreadCount" [nzOverflowCount]="99">
+              <i nz-icon nzType="bell" nzTheme="outline"></i>
+            </nz-badge>
+          </button>
+
+          <nz-dropdown-menu #notiMenu="nzDropdownMenu">
+            <div class="noti-dropdown-panel">
+              <div class="noti-header">
+                <h4>Thông báo mới ({{ unreadCount }})</h4>
+                <a routerLink="/notifications" class="view-all-link">Xem tất cả</a>
+              </div>
+              <div class="noti-list">
+                @for (item of notifications; track item.id) {
+                  <div class="noti-item" [class.unread]="!item.read">
+                    <div class="noti-dot" [class.active]="!item.read"></div>
+                    <div class="noti-body">
+                      <div class="noti-title">{{ item.title }}</div>
+                      <div class="noti-time">{{ item.time }}</div>
+                    </div>
+                  </div>
+                }
+              </div>
+              <div class="noti-footer">
+                <a routerLink="/notifications" class="btn-full-noti">Xem lịch sử thông báo</a>
+              </div>
+            </div>
+          </nz-dropdown-menu>
+
+          <!-- User Menu Dropdown -->
+          <div class="user-menu-wrapper" nz-dropdown [nzDropdownMenu]="userMenu" [nzPlacement]="'bottomRight'">
+            <nz-avatar nzIcon="user" class="user-avatar"></nz-avatar>
+            <div class="user-meta">
+              <span class="user-name">{{ authService.currentUser()?.fullName || authService.currentUser()?.username }}</span>
+              <span class="user-role-label">Công dân</span>
+            </div>
+            <i nz-icon nzType="down" class="dropdown-chevron"></i>
+          </div>
+
+          <nz-dropdown-menu #userMenu="nzDropdownMenu">
+            <ul nz-menu class="user-dropdown-menu">
+              <li nz-menu-item routerLink="/citizen/dashboard">
+                <i nz-icon nzType="dashboard" nzTheme="outline"></i> Bàn làm việc công dân
+              </li>
+              <li nz-menu-item routerLink="/citizen/profile">
+                <i nz-icon nzType="idcard" nzTheme="outline"></i> Thông tin tài khoản
+              </li>
+              <li nz-menu-item routerLink="/citizen/applications">
+                <i nz-icon nzType="file-text" nzTheme="outline"></i> Quản lý hồ sơ đã nộp
+              </li>
+              <li nz-menu-divider></li>
+              <li nz-menu-item (click)="logout()" class="logout-menu-item">
+                <i nz-icon nzType="logout" nzTheme="outline"></i> Đăng xuất
+              </li>
+            </ul>
+          </nz-dropdown-menu>
+        } @else {
+          <!-- Guest Login / Register Buttons -->
+          <div class="auth-buttons">
+            <a nz-button nzType="text" routerLink="/auth/login" class="btn-login">
+              <i nz-icon nzType="user" nzTheme="outline"></i> Đăng nhập
+            </a>
+            <a nz-button nzType="primary" routerLink="/auth/register" class="btn-register">
+              Đăng ký tài khoản
+            </a>
+          </div>
+        }
+
+        <!-- Mobile Menu Toggle Button -->
+        <button class="mobile-menu-toggle" (click)="openMobileMenu()" aria-label="Mở menu">
+          <i nz-icon nzType="menu" nzTheme="outline"></i>
+        </button>
+      </div>
+    </div>
+  </nz-header>
+
+  <!-- Mobile Drawer Menu -->
+  <nz-drawer
+    [nzClosable]="true"
+    [nzVisible]="isMobileMenuOpen"
+    nzPlacement="right"
+    nzTitle="Menu Dịch Vụ Công"
+    (nzOnClose)="closeMobileMenu()"
+    [nzWidth]="300"
+  >
+    <ng-container *nzDrawerContent>
+      <div class="mobile-drawer-content">
+        <div class="mobile-nav-list">
+          <a routerLink="/" (click)="closeMobileMenu()" class="drawer-nav-item">
+            <i nz-icon nzType="home"></i> Trang chủ
+          </a>
+          <a routerLink="/procedures" (click)="closeMobileMenu()" class="drawer-nav-item">
+            <i nz-icon nzType="form"></i> Danh mục thủ tục
+          </a>
+          <a routerLink="/tracking" (click)="closeMobileMenu()" class="drawer-nav-item">
+            <i nz-icon nzType="search"></i> Tra cứu hồ sơ
+          </a>
+          @if (authService.isAuthenticated()) {
+            <a routerLink="/citizen/applications" (click)="closeMobileMenu()" class="drawer-nav-item">
+              <i nz-icon nzType="file-text"></i> Hồ sơ của tôi
+            </a>
+            <a routerLink="/citizen/dashboard" (click)="closeMobileMenu()" class="drawer-nav-item">
+              <i nz-icon nzType="dashboard"></i> Bàn làm việc
+            </a>
+            <a routerLink="/citizen/profile" (click)="closeMobileMenu()" class="drawer-nav-item">
+              <i nz-icon nzType="idcard"></i> Thông tin cá nhân
+            </a>
+          }
+          <a routerLink="/faq" (click)="closeMobileMenu()" class="drawer-nav-item">
+            <i nz-icon nzType="question-circle"></i> Hướng dẫn & Hỏi đáp
+          </a>
+        </div>
+
+        <div class="mobile-drawer-footer">
+          @if (authService.isAuthenticated()) {
+            <button nz-button nzDanger nzBlock (click)="logout()">
+              <i nz-icon nzType="logout"></i> Đăng xuất
+            </button>
+          } @else {
+            <div class="mobile-auth-actions">
+              <a nz-button nzType="primary" nzBlock routerLink="/auth/login" (click)="closeMobileMenu()">
+                Đăng nhập
+              </a>
+              <a nz-button nzBlock routerLink="/auth/register" (click)="closeMobileMenu()">
+                Đăng ký tài khoản
+              </a>
+            </div>
+          }
+        </div>
+      </div>
+    </ng-container>
+  </nz-drawer>
+
+  <!-- Main Content Body -->
+  <nz-content class="citizen-content">
+    <router-outlet></router-outlet>
+  </nz-content>
+
+  <!-- Official Footer -->
+  <nz-footer class="citizen-footer">
+    <div class="container footer-content">
+      <div class="footer-grid">
+        <div class="footer-col brand-col">
+          <div class="footer-brand">
+            <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+            <div>
+              <h3>HỆ THỐNG DỊCH VỤ CÔNG PHƯỜNG TÂN PHÚ</h3>
+              <p>Nền tảng số phục vụ giải quyết thủ tục hành chính công khai, minh bạch cho nhân dân</p>
+            </div>
+          </div>
+          <div class="footer-meta-info">
+            <p><strong>Cơ quan chủ quản:</strong> Ủy ban Nhân dân Phường Tân Phú, TP. Hồ Chí Minh</p>
+            <p><strong>Đơn vị vận hành:</strong> Bộ phận Tiếp nhận & Trả kết quả</p>
+            <p><strong>Địa chỉ:</strong> Trụ sở UBND Phường Tân Phú, TP. Hồ Chí Minh</p>
+          </div>
+        </div>
+
+        <div class="footer-col links-col">
+          <h4>Liên kết nhanh</h4>
+          <ul>
+            <li><a routerLink="/procedures"><i nz-icon nzType="right"></i> Danh mục thủ tục hành chính</a></li>
+            <li><a routerLink="/tracking"><i nz-icon nzType="right"></i> Tra cứu tiến độ hồ sơ</a></li>
+            <li><a routerLink="/faq"><i nz-icon nzType="right"></i> Hướng dẫn nộp hồ sơ trực tuyến</a></li>
+            <li><a routerLink="/auth/login"><i nz-icon nzType="right"></i> Đăng nhập tài khoản VNeID</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col contact-col">
+          <h4>Hỗ trợ nhân dân</h4>
+          <div class="contact-box">
+            <div class="contact-item">
+              <i nz-icon nzType="phone" nzTheme="outline"></i>
+              <div>
+                <span>Đường dây nóng hỗ trợ:</span>
+                <strong>(028) 3860 6868</strong>
+              </div>
+            </div>
+            <div class="contact-item">
+              <i nz-icon nzType="mail" nzTheme="outline"></i>
+              <div>
+                <span>Hòm thư điện tử công vụ:</span>
+                <strong>ubnd.tanphu&#64;tphcm.gov.vn</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© 2026 Cổng Dịch vụ công UBND Phường Tân Phú, TP. Hồ Chí Minh. Bản quyền thuộc cơ quan hành chính nhà nước.</p>
+        <div class="footer-legal">
+          <span>Quy chế hoạt động</span>
+          <span>•</span>
+          <span>Chính sách bảo mật dữ liệu công dân</span>
+          <span>•</span>
+          <span>Điều khoản sử dụng</span>
+        </div>
+      </div>
+    </div>
+  </nz-footer>
+
+  <!-- Global Floating AI Chatbot -->
+  <app-chatbot-widget></app-chatbot-widget>
+</nz-layout>
+

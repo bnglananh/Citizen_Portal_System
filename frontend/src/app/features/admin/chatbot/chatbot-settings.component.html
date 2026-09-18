@@ -1,0 +1,115 @@
+<div class="chatbot-settings-wrapper">
+  <!-- Page Header -->
+  <div class="page-top-bar">
+    <div>
+      <h1 class="page-title">Cấu hình Bối cảnh Xưng hô Trợ lý AI</h1>
+      <p class="page-desc">Tùy chỉnh đại từ nhân xưng và phong cách giao tiếp của Chatbot Dịch vụ công khi tương tác với người dân</p>
+    </div>
+    <button nz-button nzType="primary" (click)="saveSettings()" [nzLoading]="isSaving" class="btn-save-settings">
+      <i nz-icon nzType="save"></i> Lưu cấu hình xưng hô
+    </button>
+  </div>
+
+  <!-- Active Persona Alert -->
+  <div class="active-tone-banner">
+    <div class="banner-left">
+      <div class="robot-avatar">
+        <i nz-icon nzType="robot" nzTheme="outline"></i>
+      </div>
+      <div class="banner-info">
+        <span class="banner-label">Phong cách xưng hô đang kích hoạt:</span>
+        <strong class="banner-val">{{ getSelectedOption().name }}</strong>
+      </div>
+    </div>
+    <nz-tag nzColor="success" class="status-tag">
+      <i nz-icon nzType="check-circle"></i> Đang áp dụng hệ thống
+    </nz-tag>
+  </div>
+
+  <!-- Persona Selection Cards Grid -->
+  <div class="tone-cards-grid">
+    @for (opt of options; track opt.key) {
+      <div
+        class="tone-card"
+        [class.selected]="selectedTone === opt.key"
+        (click)="selectTone(opt.key)"
+      >
+        <div class="tone-card-header">
+          <div class="radio-wrap">
+            <span class="custom-radio" [class.checked]="selectedTone === opt.key"></span>
+            <h3 class="tone-name">{{ opt.name }}</h3>
+          </div>
+          @if (opt.key === 'CITIZEN_ASSISTANT') {
+            <nz-tag nzColor="gold" class="recommend-tag">Khuyên dùng cho DVC</nz-tag>
+          }
+        </div>
+
+        <p class="tone-desc">{{ opt.description }}</p>
+
+        <div class="pronouns-badge-row">
+          <div class="pronoun-item">
+            <span class="p-label">Chatbot xưng:</span>
+            <nz-tag nzColor="blue" class="p-val">{{ opt.botPronoun }}</nz-tag>
+          </div>
+          <div class="pronoun-item">
+            <span class="p-label">Gọi người dùng:</span>
+            <nz-tag nzColor="cyan" class="p-val">{{ opt.userPronoun }}</nz-tag>
+          </div>
+        </div>
+
+        <div class="sample-box">
+          <div class="sample-label"><i nz-icon nzType="message"></i> Câu chào mở đầu:</div>
+          <p class="sample-text">"{{ opt.sampleGreeting }}"</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Interactive Live Preview Section -->
+  <div class="preview-card">
+    <div class="preview-header">
+      <div class="preview-title">
+        <i nz-icon nzType="eye" nzTheme="outline"></i>
+        <span>Bản xem trước giao diện trò chuyện thực tế</span>
+      </div>
+      <span class="preview-hint">Dựa trên phong cách <strong>{{ getSelectedOption().name }}</strong></span>
+    </div>
+
+    <div class="chat-preview-body">
+      <!-- Bot Welcome -->
+      <div class="chat-row bot-row">
+        <div class="chat-avatar bot-av">
+          <i nz-icon nzType="robot"></i>
+        </div>
+        <div class="chat-bubble bot-bubble">
+          <p>{{ getSelectedOption().sampleGreeting }}</p>
+        </div>
+      </div>
+
+      <!-- User Question -->
+      <div class="chat-row user-row">
+        <div class="chat-bubble user-bubble">
+          <p>Tôi muốn hỏi về thủ tục đăng ký khai sinh trực tuyến cần những giấy tờ gì?</p>
+        </div>
+        <div class="chat-avatar user-av">
+          <i nz-icon nzType="user"></i>
+        </div>
+      </div>
+
+      <!-- Bot Answer -->
+      <div class="chat-row bot-row">
+        <div class="chat-avatar bot-av">
+          <i nz-icon nzType="robot"></i>
+        </div>
+        <div class="chat-bubble bot-bubble">
+          <p>{{ getSelectedOption().sampleResponse }}</p>
+          <ul class="preview-doc-list">
+            <li>1. Giấy chứng sinh do cơ sở y tế cấp</li>
+            <li>2. Bản sao CCCD của người nộp hồ sơ</li>
+            <li>3. Giấy chứng nhận kết hôn của cha mẹ (nếu có)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

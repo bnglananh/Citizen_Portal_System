@@ -1,0 +1,38 @@
+{
+  // Format on save
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+
+  // Specific formatters by language
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+
+  // File watcher & Search exclusions to improve IDE performance
+  "files.watcherExclude": {
+    "**/frontend/node_modules/**": true,
+    "**/frontend/dist/**": true,
+    "**/frontend/.angular/**": true,
+    "**/backend/target/**": true,
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true
+  },
+  "search.exclude": {
+    "**/frontend/node_modules": true,
+    "**/frontend/dist": true,
+    "**/backend/target": true
+  },
+
+  // Java Configuration
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.compile.nullAnalysis.mode": "automatic"
+}

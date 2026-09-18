@@ -1,10 +1,11 @@
 {
-  // For more information, visit: https://go.microsoft.com/fwlink/?LinkId=733558
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "Start Frontend (Angular)",
       "type": "npm",
       "script": "start",
+      "path": "frontend",
       "isBackground": true,
       "problemMatcher": {
         "owner": "typescript",
@@ -12,31 +13,47 @@
         "background": {
           "activeOnStart": true,
           "beginsPattern": {
-            "regexp": "Changes detected"
+            "regexp": "Changes detected|Building..."
           },
           "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
+            "regexp": "bundle generation (complete|failed)|Application bundle generation complete"
           }
         }
+      },
+      "presentation": {
+        "group": "frontend"
       }
     },
     {
-      "type": "npm",
-      "script": "test",
+      "label": "Start Backend (Spring Boot)",
+      "type": "shell",
+      "command": "./mvnw spring-boot:run",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
       "isBackground": true,
-      "problemMatcher": {
-        "owner": "typescript",
-        "pattern": "$tsc",
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": {
-            "regexp": "Changes detected"
-          },
-          "endsPattern": {
-            "regexp": "bundle generation (complete|failed)"
-          }
-        }
+      "problemMatcher": [],
+      "presentation": {
+        "group": "backend"
       }
+    },
+    {
+      "label": "Build Frontend",
+      "type": "npm",
+      "script": "build",
+      "path": "frontend",
+      "group": "build",
+      "problemMatcher": ["$tsc"]
+    },
+    {
+      "label": "Build Backend",
+      "type": "shell",
+      "command": "./mvnw clean package -DskipTests",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
+      },
+      "group": "build",
+      "problemMatcher": []
     }
   ]
 }

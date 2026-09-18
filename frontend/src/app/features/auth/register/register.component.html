@@ -1,0 +1,209 @@
+<div class="register-card-box">
+  <!-- Progress Header -->
+  <div class="card-header-banner">
+    <h2>ĐĂNG KÝ TÀI KHOẢN CÔNG DÂN</h2>
+    <p>Hệ thống hỗ trợ nộp và theo dõi thủ tục hành chính trực tuyến Phường Tân Phú</p>
+  </div>
+
+  <!-- Step Indicator -->
+  <div class="register-steps-indicator">
+    <div class="step-bullet clickable" [class.active]="currentStep === 0" [class.completed]="currentStep > 0" (click)="onBackToStep0()">
+      <span class="bullet-num">1</span>
+      <span class="bullet-text">Khai báo thông tin</span>
+    </div>
+    <div class="step-divider" [class.active]="currentStep > 0"></div>
+    <div class="step-bullet" [class.clickable]="hasSentOtpAtLeastOnce" [class.active]="currentStep === 1" (click)="hasSentOtpAtLeastOnce && (currentStep = 1)">
+      <span class="bullet-num">2</span>
+      <span class="bullet-text">Xác thực Gmail OTP</span>
+    </div>
+  </div>
+
+  <!-- STEP 0: CITIZEN INFORMATION FORM -->
+  @if (currentStep === 0) {
+    <form nz-form [formGroup]="registerForm" (ngSubmit)="onRequestOtp()" nzLayout="vertical" class="register-form">
+      <!-- Full name -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Họ và tên (chữ in hoa có dấu hoặc thường)</nz-form-label>
+        <nz-form-control nzErrorTip="Vui lòng nhập họ và tên (tối thiểu 3 ký tự)">
+          <nz-input-wrapper>
+            <span nzInputPrefix><i nz-icon nzType="user"></i></span>
+            <input type="text" nz-input formControlName="fullName" placeholder="VD: NGUYỄN VĂN AN" />
+          </nz-input-wrapper>
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="form-row-2">
+        <!-- CCCD -->
+        <nz-form-item>
+          <nz-form-label nzRequired>Số CCCD / Định danh (12 số)</nz-form-label>
+          <nz-form-control nzErrorTip="Số CCCD phải gồm đúng 12 chữ số">
+            <nz-input-wrapper>
+              <span nzInputPrefix><i nz-icon nzType="idcard"></i></span>
+              <input type="text" nz-input formControlName="citizenIdCard" placeholder="VD: 001099012345" maxlength="12" />
+            </nz-input-wrapper>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Phone -->
+        <nz-form-item>
+          <nz-form-label nzRequired>Số điện thoại</nz-form-label>
+          <nz-form-control nzErrorTip="Số điện thoại di động không hợp lệ">
+            <nz-input-wrapper>
+              <span nzInputPrefix><i nz-icon nzType="phone"></i></span>
+              <input type="text" nz-input formControlName="phoneNumber" placeholder="VD: 0912345678" maxlength="10" />
+            </nz-input-wrapper>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <!-- Email -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Địa chỉ Gmail nhận mã xác thực OTP</nz-form-label>
+        <nz-form-control nzErrorTip="Email không đúng định dạng Gmail/Email hợp lệ">
+          <nz-input-wrapper>
+            <span nzInputPrefix><i nz-icon nzType="mail"></i></span>
+            <input type="email" nz-input formControlName="email" placeholder="VD: nguyenvanan@gmail.com" />
+          </nz-input-wrapper>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Address -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Địa chỉ thường trú</nz-form-label>
+        <nz-form-control nzErrorTip="Vui lòng nhập địa chỉ thường trú">
+          <nz-input-wrapper>
+            <span nzInputPrefix><i nz-icon nzType="home"></i></span>
+            <input type="text" nz-input formControlName="address" placeholder="VD: Số 45 Đường Vườn Lài, Phường Tân Phú, TP. Hồ Chí Minh" />
+          </nz-input-wrapper>
+        </nz-form-control>
+      </nz-form-item>
+
+      <div class="form-row-2">
+        <!-- Username -->
+        <nz-form-item>
+          <nz-form-label nzRequired>Tên đăng nhập</nz-form-label>
+          <nz-form-control nzErrorTip="Tối thiểu 4 ký tự">
+            <nz-input-wrapper>
+              <span nzInputPrefix><i nz-icon nzType="user-add"></i></span>
+              <input type="text" nz-input formControlName="username" placeholder="VD: nguyenvanan" />
+            </nz-input-wrapper>
+          </nz-form-control>
+        </nz-form-item>
+
+        <!-- Password -->
+        <nz-form-item>
+          <nz-form-label nzRequired>Mật khẩu</nz-form-label>
+          <nz-form-control nzErrorTip="Mật khẩu tối thiểu 6 ký tự">
+            <nz-input-wrapper>
+              <span nzInputPrefix><i nz-icon nzType="lock"></i></span>
+              <input type="password" nz-input formControlName="password" placeholder="Mật khẩu" />
+            </nz-input-wrapper>
+          </nz-form-control>
+        </nz-form-item>
+      </div>
+
+      <!-- Confirm Password -->
+      <nz-form-item>
+        <nz-form-label nzRequired>Xác nhận lại mật khẩu</nz-form-label>
+        <nz-form-control nzErrorTip="Mật khẩu xác nhận không khớp">
+          <nz-input-wrapper>
+            <span nzInputPrefix><i nz-icon nzType="safety"></i></span>
+            <input type="password" nz-input formControlName="confirmPassword" placeholder="Nhập lại mật khẩu" />
+          </nz-input-wrapper>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Agree Terms -->
+      <nz-form-item>
+        <nz-form-control nzErrorTip="Bạn phải đồng ý với cam kết sử dụng">
+          <label nz-checkbox formControlName="agreeTerms">
+            Tôi cam kết các thông tin khai báo trên là chính xác và chịu trách nhiệm trước pháp luật.
+          </label>
+        </nz-form-control>
+      </nz-form-item>
+
+      <!-- Submit Button to Get OTP -->
+      <button
+        nz-button
+        nzType="primary"
+        nzBlock
+        nzSize="large"
+        [nzLoading]="isSendingOtp"
+        class="submit-btn"
+      >
+        <i nz-icon nzType="mail"></i> TIẾP TỤC & GỬI MÃ XÁC THỰC OTP
+      </button>
+    </form>
+  }
+
+  <!-- STEP 1: OTP VERIFICATION -->
+  @if (currentStep === 1) {
+    <div class="otp-verification-pane">
+      <div class="otp-hero-icon">
+        <i nz-icon nzType="safety-certificate" nzTheme="fill"></i>
+      </div>
+
+      <h3 class="otp-pane-title">XÁC THỰC TÀI KHOẢN QUA GMAIL</h3>
+      <p class="otp-pane-desc">
+        Hệ thống đã gửi mã OTP gồm 6 chữ số tới địa chỉ email:
+      </p>
+      <div class="target-email-badge">
+        <i nz-icon nzType="mail"></i>
+        <strong class="font-mono">{{ registerForm.value.email }}</strong>
+      </div>
+
+      <div class="otp-input-container">
+        <label class="otp-input-label">Nhập mã xác thực 6 chữ số:</label>
+        <div class="otp-box-wrapper">
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="otpCode"
+            maxlength="6"
+            placeholder="• • • • • •"
+            class="otp-large-input tabular-nums font-mono font-bold"
+            autofocus
+            (keyup.enter)="onVerifyAndRegister()"
+          />
+        </div>
+      </div>
+
+      <div class="otp-resend-bar">
+        @if (countdownSeconds > 0) {
+          <span class="resend-countdown">
+            <i nz-icon nzType="clock-circle"></i> Gửi lại mã sau <strong>{{ countdownSeconds }}s</strong>
+          </span>
+        } @else {
+          <button nz-button nzType="link" (click)="resendOtp()" [nzLoading]="isSendingOtp" class="btn-resend-link">
+            <i nz-icon nzType="reload"></i> Gửi lại mã OTP qua Gmail
+          </button>
+        }
+      </div>
+
+      <div class="otp-actions-row">
+        <button nz-button nzType="default" nzSize="large" (click)="onBackToStep0()" class="btn-back-step">
+          <i nz-icon nzType="arrow-left"></i> Sửa thông tin
+        </button>
+        <button
+          nz-button
+          nzType="primary"
+          nzSize="large"
+          [nzLoading]="isLoading"
+          (click)="onVerifyAndRegister()"
+          class="btn-submit-otp"
+        >
+          <i nz-icon nzType="check-circle"></i> XÁC NHẬN & ĐĂNG KÝ
+        </button>
+      </div>
+
+      <div class="otp-security-hint">
+        <i nz-icon nzType="info-circle"></i> Mã OTP có hiệu lực trong 5 phút. Vui lòng kiểm tra cả hòm thư Spam/Rác nếu không thấy thư.
+      </div>
+    </div>
+  }
+
+  <div class="card-footer-links">
+    <span>Đã có tài khoản?</span>
+    <a routerLink="/auth/login" class="login-link">Đăng nhập ngay</a>
+  </div>
+</div>

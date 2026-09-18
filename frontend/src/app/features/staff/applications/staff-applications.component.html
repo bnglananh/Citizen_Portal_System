@@ -1,0 +1,118 @@
+<div class="staff-apps-wrapper">
+  <!-- Page Header -->
+  <div class="page-title-box">
+    <div>
+      <h1 class="page-title">Hồ sơ thẩm định & Xử lý nghiệp vụ</h1>
+      <p class="page-desc">Danh sách toàn bộ hồ sơ thuộc thẩm quyền tiếp nhận và giải quyết</p>
+    </div>
+  </div>
+
+  <!-- Filter Toolbar Card -->
+  <div class="filter-toolbar-card">
+    <div class="filter-grid">
+      <!-- Search input -->
+      <div class="filter-item search-item">
+        <label>Tìm kiếm nhanh</label>
+        <nz-input-wrapper>
+          <span nzInputPrefix><i nz-icon nzType="search"></i></span>
+          <input
+            type="text"
+            nz-input
+            placeholder="Mã hồ sơ, CCCD, tên công dân..."
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="applyFilters()"
+          />
+        
+        </nz-input-wrapper>
+        <ng-template #searchPrefix><i nz-icon nzType="search"></i></ng-template>
+      </div>
+
+      <!-- Status select -->
+      <div class="filter-item">
+        <label>Trạng thái hồ sơ</label>
+        <nz-select [(ngModel)]="selectedStatus" (ngModelChange)="applyFilters()" class="w-100">
+          <nz-option nzValue="ALL" nzLabel="-- Tất cả trạng thái --"></nz-option>
+          <nz-option nzValue="SUBMITTED" nzLabel="Chờ tiếp nhận (Mới)"></nz-option>
+          <nz-option nzValue="RECEIVED" nzLabel="Đã tiếp nhận"></nz-option>
+          <nz-option nzValue="PROCESSING" nzLabel="Đang thẩm định"></nz-option>
+          <nz-option nzValue="NEED_REVISION" nzLabel="Yêu cầu bổ sung"></nz-option>
+          <nz-option nzValue="RESUBMITTED" nzLabel="Đã gửi bổ sung"></nz-option>
+          <nz-option nzValue="COMPLETED" nzLabel="Đã phê duyệt"></nz-option>
+          <nz-option nzValue="REJECTED" nzLabel="Đã từ chối"></nz-option>
+        </nz-select>
+      </div>
+
+      <!-- Reset button -->
+      <div class="filter-item btn-item">
+        <button nz-button nzType="default" (click)="searchQuery = ''; selectedStatus = 'ALL'; applyFilters()" class="btn-reset">
+          <i nz-icon nzType="reload"></i> Làm mới
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applications Table Card -->
+  <div class="table-card">
+    <nz-table
+      #staffTable
+      [nzData]="filteredApplications"
+      [nzPageSize]="10"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[5, 10, 20, 50]"
+      [nzShowQuickJumper]="true"
+      [nzShowTotal]="staffTotalTpl"
+      nzBordered
+      nzSize="middle"
+      class="high-density-table"
+    >
+      <ng-template #staffTotalTpl let-total>
+        <span class="tabular-nums font-medium text-slate-500">Tổng cộng: <strong>{{ total }}</strong> hồ sơ</span>
+      </ng-template>
+      <thead>
+        <tr>
+          <th nzWidth="60px" class="text-center">STT</th>
+          <th nzWidth="150px">Mã hồ sơ</th>
+          <th>Thủ tục hành chính</th>
+          <th>Người nộp / CCCD</th>
+          <th nzWidth="140px">Ngày tiếp nhận</th>
+          <th nzWidth="160px">Trạng thái</th>
+          <th nzWidth="140px" class="text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (item of staffTable.data; track item.id; let i = $index) {
+          <tr>
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td>
+              <strong class="code-link">
+                <a [routerLink]="['/staff/applications', item.id, 'review']">{{ item.applicationCode }}</a>
+              </strong>
+            </td>
+            <td><strong>{{ item.procedureName }}</strong></td>
+            <td>
+              <div class="citizen-meta">
+                <span class="c-name">{{ item.citizenName }}</span>
+                <span class="c-id tabular-nums">{{ item.citizenIdCard }}</span>
+              </div>
+            </td>
+            <td class="tabular-nums">{{ (item.submittedAt || item.createdAt) | date:'dd/MM/yyyy HH:mm' }}</td>
+            <td>
+              <app-status-tag [status]="item.status"></app-status-tag>
+            </td>
+            <td class="text-center">
+              <a
+                nz-button
+                nzType="primary"
+                nzSize="small"
+                [routerLink]="['/staff/applications', item.id, 'review']"
+                class="btn-appraise"
+              >
+                <i nz-icon nzType="audit"></i> Thẩm định
+              </a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+</div>

@@ -1,0 +1,189 @@
+<div class="user-mgmt-wrapper">
+  <!-- Page Top Bar -->
+  <div class="page-top-bar">
+    <div>
+      <h1 class="page-title">Quản lý Người dùng & Phân quyền</h1>
+      <p class="page-desc">Quản trị danh sách tài khoản Công dân, Cán bộ và Quản trị viên</p>
+    </div>
+    <button nz-button nzType="primary" (click)="openAddModal()" class="btn-add-user">
+      <i nz-icon nzType="plus"></i> Tạo mới tài khoản
+    </button>
+  </div>
+
+  <!-- Filter Card -->
+  <div class="filter-card">
+    <div class="filter-flex">
+      <div class="search-input-box">
+        <label>Tìm kiếm</label>
+        <nz-input-wrapper>
+          <span nzInputPrefix><i nz-icon nzType="search"></i></span>
+          <input
+            type="text"
+            nz-input
+            placeholder="Tên đăng nhập, Họ tên, CCCD, Email..."
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="filterUsers()"
+          />
+        
+        </nz-input-wrapper>
+        <ng-template #searchIcon><i nz-icon nzType="search"></i></ng-template>
+      </div>
+
+      <div class="role-filter-box">
+        <label>Vai trò người dùng</label>
+        <nz-select [(ngModel)]="selectedRoleFilter" (ngModelChange)="filterUsers()" class="w-100">
+          <nz-option nzValue="ALL" nzLabel="-- Tất cả vai trò --"></nz-option>
+          <nz-option nzValue="ROLE_CITIZEN" nzLabel="Công dân"></nz-option>
+          <nz-option nzValue="ROLE_STAFF" nzLabel="Cán bộ"></nz-option>
+          <nz-option nzValue="ROLE_ADMIN" nzLabel="Quản trị viên"></nz-option>
+        </nz-select>
+      </div>
+
+      <button nz-button nzType="default" (click)="searchQuery = ''; selectedRoleFilter = 'ALL'; filterUsers()" class="btn-refresh">
+        <i nz-icon nzType="reload"></i> Làm mới
+      </button>
+    </div>
+  </div>
+
+  <!-- Table Card -->
+  <div class="table-card">
+    <nz-table
+      #userTable
+      [nzData]="filteredUsers"
+      [nzPageSize]="10"
+      [nzShowSizeChanger]="true"
+      [nzPageSizeOptions]="[5, 10, 20, 50]"
+      [nzShowQuickJumper]="true"
+      [nzShowTotal]="userTotalTpl"
+      nzBordered
+      nzSize="middle"
+      class="user-table"
+    >
+      <ng-template #userTotalTpl let-total>
+        <span class="tabular-nums font-medium text-slate-500">Tổng cộng: <strong>{{ total }}</strong> tài khoản</span>
+      </ng-template>
+      <thead>
+        <tr>
+          <th nzWidth="60px" class="text-center">STT</th>
+          <th nzWidth="140px">Tên đăng nhập</th>
+          <th>Họ và tên</th>
+          <th nzWidth="140px">Số CCCD</th>
+          <th>Email & Điện thoại</th>
+          <th nzWidth="150px">Vai trò</th>
+          <th nzWidth="110px" class="text-center">Kích hoạt</th>
+          <th nzWidth="120px" class="text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (u of userTable.data; track u.id; let i = $index) {
+          <tr>
+            <td class="text-center font-bold">{{ i + 1 }}</td>
+            <td><strong class="user-code font-mono">{{ u.username }}</strong></td>
+            <td><strong>{{ u.fullName }}</strong></td>
+            <td class="tabular-nums font-mono">{{ u.citizenIdCard || '---' }}</td>
+            <td>
+              <div class="contact-info">
+                <span><i nz-icon nzType="mail"></i> {{ u.email }}</span>
+                <span><i nz-icon nzType="phone"></i> {{ u.phoneNumber || '---' }}</span>
+              </div>
+            </td>
+            <td>
+              @for (role of u.roles; track role) {
+                @if (role === 'ROLE_ADMIN') {
+                  <nz-tag nzColor="gold">Quản trị viên</nz-tag>
+                } @else if (role === 'ROLE_STAFF') {
+                  <nz-tag nzColor="green">Cán bộ</nz-tag>
+                } @else {
+                  <nz-tag nzColor="default">Công dân</nz-tag>
+                }
+              }
+            </td>
+            <td class="text-center">
+              <nz-switch [ngModel]="u.enabled" (ngModelChange)="toggleUserStatus(u)" nzSize="small"></nz-switch>
+            </td>
+            <td class="text-center">
+              <button nz-button nzType="text" nzSize="small" (click)="openEditModal(u)" title="Chỉnh sửa">
+                <i nz-icon nzType="edit"></i> Sửa
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </nz-table>
+  </div>
+
+  <!-- ADD / EDIT USER MODAL -->
+  <nz-modal
+    [(nzVisible)]="isModalVisible"
+    [nzTitle]="isEditing ? 'CHỈNH SỬA THÔNG TIN NGƯỜI DÙNG' : 'TẠO MỚI TÀI KHOẢN NGƯỜI DÙNG'"
+    (nzOnCancel)="isModalVisible = false"
+    (nzOnOk)="saveUser()"
+    [nzOkLoading]="isLoading"
+    nzOkText="Lưu thông tin"
+    nzCancelText="Hủy bỏ"
+    nzWidth="600px"
+  >
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="userForm" nzLayout="vertical">
+        <div class="form-row-2">
+          <nz-form-item>
+            <nz-form-label nzRequired>Tên đăng nhập</nz-form-label>
+            <nz-form-control nzErrorTip="Tối thiểu 4 ký tự">
+              <input type="text" nz-input formControlName="username" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label nzRequired>Vai trò hệ thống</nz-form-label>
+            <nz-form-control>
+              <nz-select formControlName="role">
+                <nz-option nzValue="ROLE_CITIZEN" nzLabel="Công dân"></nz-option>
+                <nz-option nzValue="ROLE_STAFF" nzLabel="Cán bộ"></nz-option>
+                <nz-option nzValue="ROLE_ADMIN" nzLabel="Quản trị viên Hệ thống"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Họ và tên đầy đủ</nz-form-label>
+          <nz-form-control nzErrorTip="Vui lòng nhập họ tên">
+            <input type="text" nz-input formControlName="fullName" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <div class="form-row-2">
+          <nz-form-item>
+            <nz-form-label nzRequired>Số CCCD / Định danh</nz-form-label>
+            <nz-form-control nzErrorTip="CCCD gồm đúng 12 số">
+              <input type="text" nz-input formControlName="citizenIdCard" />
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-form-item>
+            <nz-form-label nzRequired>Số điện thoại</nz-form-label>
+            <nz-form-control nzErrorTip="Vui lòng nhập số điện thoại">
+              <input type="text" nz-input formControlName="phoneNumber" />
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Địa chỉ Email</nz-form-label>
+          <nz-form-control nzErrorTip="Email không đúng định dạng">
+            <input type="email" nz-input formControlName="email" />
+          </nz-form-control>
+        </nz-form-item>
+
+        @if (!isEditing) {
+          <nz-form-item>
+            <nz-form-label nzRequired>Mật khẩu khởi tạo</nz-form-label>
+            <nz-form-control nzErrorTip="Mật khẩu tối thiểu 6 ký tự">
+              <input type="password" nz-input formControlName="password" />
+            </nz-form-control>
+          </nz-form-item>
+        }
+      </form>
+    </ng-container>
+  </nz-modal>
+</div>

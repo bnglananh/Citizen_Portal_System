@@ -1,0 +1,158 @@
+.login-card-box {
+  background: #FFFFFF;
+  border-radius: var(--dvc-radius-lg);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--dvc-border-color);
+  padding: 2.25rem 2rem;
+
+  .card-header-banner {
+    text-align: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--dvc-primary);
+      margin-bottom: 0.35rem;
+      letter-spacing: 0.4px;
+    }
+
+    p {
+      font-size: 0.84rem;
+      color: var(--dvc-text-muted);
+      margin: 0;
+    }
+  }
+
+  .login-tabs {
+    margin-bottom: 1.25rem;
+
+    ::ng-deep .ant-tabs-tab {
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+  }
+
+  .tab-note {
+    background: #FAF7F2;
+    border: 1px solid var(--dvc-border-color);
+    border-radius: var(--dvc-radius-sm);
+    padding: 0.5rem 0.75rem;
+    font-size: 0.775rem;
+    color: var(--dvc-text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 1rem;
+
+    i {
+      color: var(--dvc-primary);
+    }
+
+    &.officer-note {
+      background: #F4F8F5;
+      border-color: #B9D6C4;
+      color: #1E3B2C;
+      i {
+        color: #2F5D45;
+      }
+    }
+  }
+
+  .login-form {
+    ::ng-deep .ant-form-item {
+      margin-bottom: 1rem;
+    }
+
+    ::ng-deep .ant-form-item-label > label {
+      font-weight: 600;
+      font-size: 0.84rem;
+      color: var(--dvc-text-primary);
+    }
+
+    ::ng-deep .ant-input-affix-wrapper {
+      padding: 0.55rem 0.85rem;
+      border-radius: var(--dvc-radius-sm);
+    }
+  }
+
+  .submit-btn {
+    height: 44px;
+    margin-top: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    background-color: var(--dvc-primary);
+    border-color: var(--dvc-primary);
+
+    &:hover {
+      background-color: #244b37;
+      border-color: #244b37;
+    }
+  }
+
+  .demo-accounts-section {
+    margin-top: 1.5rem;
+    padding-top: 1.25rem;
+    border-top: 1px dashed var(--dvc-border-color);
+
+    .demo-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--dvc-text-muted);
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .demo-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+    }
+
+    .demo-tag {
+      background: #FAF7F2;
+      border: 1px solid var(--dvc-border-color);
+      border-radius: var(--dvc-radius-sm);
+      padding: 0.35rem 0.65rem;
+      font-size: 0.785rem;
+      font-weight: 500;
+      color: var(--dvc-text-primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      transition: all 0.2s ease;
+      text-align: left;
+
+      &:hover {
+        background: #F3EEE4;
+        border-color: var(--dvc-accent);
+        transform: translateX(2px);
+      }
+
+      &.citizen-tag i { color: #2F5D45; }
+      &.staff-tag i { color: #C99A3C; }
+      &.admin-tag i { color: #8C2B2B; }
+    }
+  }
+
+  .card-footer-links {
+    margin-top: 1.25rem;
+    text-align: center;
+    font-size: 0.84rem;
+    color: var(--dvc-text-secondary);
+
+    .register-link {
+      font-weight: 700;
+      color: var(--dvc-primary);
+      margin-left: 0.35rem;
+
+      &:hover {
+        color: var(--dvc-accent);
+        text-decoration: underline;
+      }
+    }
+  }
+}

@@ -1,0 +1,124 @@
+<div class="profile-page-wrapper">
+  <!-- Header Card -->
+  <div class="profile-header-card">
+    <div class="user-avatar-badge">
+      <i nz-icon nzType="user"></i>
+    </div>
+    <div class="user-main-info">
+      <h2>{{ authService.currentUser()?.fullName || 'Nguyễn Văn An' }}</h2>
+      <div class="user-sub-tags">
+        <nz-tag nzColor="success"><i nz-icon nzType="check-circle"></i> Đã định danh điện tử VNeID</nz-tag>
+        <nz-tag class="role-tag">Tài khoản Công dân</nz-tag>
+      </div>
+    </div>
+    <div class="header-action-btns">
+      <button nz-button nzType="default" (click)="openChangePassword()">
+        <i nz-icon nzType="lock"></i> Đổi mật khẩu
+      </button>
+      <button nz-button nzType="primary" (click)="openEditProfile()" class="btn-edit-profile">
+        <i nz-icon nzType="edit"></i> Chỉnh sửa thông tin
+      </button>
+    </div>
+  </div>
+
+  <!-- Information Descriptions Card -->
+  <div class="profile-details-card">
+    <div class="section-title">
+      <i nz-icon nzType="idcard"></i>
+      <h3>Thông tin cá nhân & Định danh</h3>
+    </div>
+
+    <nz-descriptions nzBordered [nzColumn]="{ xxl: 2, xl: 2, lg: 2, md: 1, sm: 1, xs: 1 }">
+      <nz-descriptions-item nzTitle="Họ và tên">{{ authService.currentUser()?.fullName || 'Nguyễn Văn An' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Số CCCD / Định danh">{{ authService.currentUser()?.citizenIdCard || '001099012345' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Tên đăng nhập">{{ authService.currentUser()?.username || 'citizen' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Số điện thoại">{{ authService.currentUser()?.phoneNumber || '0912345678' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Hòm thư điện tử (Email)">{{ authService.currentUser()?.email || 'nguyenvanan@gmail.com' }}</nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Trạng thái tài khoản">
+        <nz-tag nzColor="processing">Đang hoạt động</nz-tag>
+      </nz-descriptions-item>
+      <nz-descriptions-item nzTitle="Địa chỉ thường trú">
+        {{ authService.currentUser()?.address || 'Số 45 Đường Vườn Lài, Phường Tân Phú, TP. Hồ Chí Minh' }}
+      </nz-descriptions-item>
+    </nz-descriptions>
+  </div>
+
+  <!-- Change Password Modal -->
+  <nz-modal
+    [(nzVisible)]="isPasswordModalVisible"
+    nzTitle="ĐỔI MẬT KHẨU TÀI KHOẢN"
+    (nzOnCancel)="isPasswordModalVisible = false"
+    (nzOnOk)="savePassword()"
+    [nzOkLoading]="isLoading"
+    nzOkText="Xác nhận đổi"
+    nzCancelText="Hủy bỏ"
+  >
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="passwordForm" nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label nzRequired>Mật khẩu hiện tại</nz-form-label>
+          <nz-form-control nzErrorTip="Vui lòng nhập mật khẩu hiện tại">
+            <input type="password" nz-input formControlName="currentPassword" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Mật khẩu mới (tối thiểu 6 ký tự)</nz-form-label>
+          <nz-form-control nzErrorTip="Mật khẩu mới tối thiểu 6 ký tự">
+            <input type="password" nz-input formControlName="newPassword" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Xác nhận lại mật khẩu mới</nz-form-label>
+          <nz-form-control nzErrorTip="Vui lòng nhập lại mật khẩu mới">
+            <input type="password" nz-input formControlName="confirmNewPassword" />
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </ng-container>
+  </nz-modal>
+
+  <!-- Edit Profile Modal -->
+  <nz-modal
+    [(nzVisible)]="isEditProfileModalVisible"
+    nzTitle="CHỈNH SỬA THÔNG TIN CÁ NHÂN"
+    (nzOnCancel)="isEditProfileModalVisible = false"
+    (nzOnOk)="saveProfile()"
+    [nzOkLoading]="isLoading"
+    nzOkText="Lưu thay đổi"
+    nzCancelText="Hủy bỏ"
+  >
+    <ng-container *nzModalContent>
+      <form nz-form [formGroup]="profileForm" nzLayout="vertical">
+        <nz-form-item>
+          <nz-form-label nzRequired>Họ và tên</nz-form-label>
+          <nz-form-control>
+            <input type="text" nz-input formControlName="fullName" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Số điện thoại</nz-form-label>
+          <nz-form-control>
+            <input type="text" nz-input formControlName="phoneNumber" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Email</nz-form-label>
+          <nz-form-control>
+            <input type="email" nz-input formControlName="email" />
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label nzRequired>Địa chỉ cư trú</nz-form-label>
+          <nz-form-control>
+            <input type="text" nz-input formControlName="address" />
+          </nz-form-control>
+        </nz-form-item>
+      </form>
+    </ng-container>
+  </nz-modal>
+</div>

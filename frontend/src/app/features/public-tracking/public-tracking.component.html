@@ -1,0 +1,131 @@
+<div class="tracking-page-wrapper">
+  <!-- Search Card -->
+  <div class="tracking-search-card">
+    <div class="search-header">
+      <div class="search-icon-emblem">
+        <i nz-icon nzType="search" nzTheme="outline"></i>
+      </div>
+      <h2>TRA CỨU TIẾN ĐỘ HỒ SƠ CÔNG KHAI</h2>
+      <p>Nhập mã số hồ sơ được cấp trong Giấy tiếp nhận hoặc tin nhắn SMS để theo dõi tiến độ giải quyết</p>
+    </div>
+
+    <div class="search-form-row">
+      <div class="tracking-input-box">
+        <i nz-icon nzType="file-text" class="input-prefix-icon"></i>
+        <input
+          type="text"
+          nz-input
+          placeholder="Nhập mã số hồ sơ (VD: HS202600001, HS2026090123...)"
+          [(ngModel)]="searchCode"
+          (keyup.enter)="doSearch()"
+          class="custom-track-input"
+        />
+      </div>
+
+      <button
+        nz-button
+        nzType="primary"
+        nzSize="large"
+        [nzLoading]="isSearching"
+        (click)="doSearch()"
+        class="btn-track-submit"
+      >
+        <i nz-icon nzType="search"></i> TRA CỨU NGAY
+      </button>
+    </div>
+
+    <div class="sample-codes">
+      <span>Mã tra cứu mẫu:</span>
+      <button class="sample-btn" (click)="quickTrack('HS2026090123')">HS2026090123 (Đang xử lý)</button>
+      <button class="sample-btn" (click)="quickTrack('HS2026089901')">HS2026089901 (Cần bổ sung)</button>
+      <button class="sample-btn" (click)="quickTrack('HS2026078822')">HS2026078822 (Hoàn tất)</button>
+    </div>
+  </div>
+
+  <!-- Search Results Area -->
+  @if (hasSearched && mockApplication) {
+    <div class="tracking-result-box animate-fade-in">
+      <!-- Result Top Header Banner -->
+      <div class="result-banner">
+        <div class="banner-left">
+          <div class="code-and-status">
+            <span class="app-code">{{ mockApplication.applicationCode }}</span>
+            <app-status-tag [status]="mockApplication.status"></app-status-tag>
+          </div>
+          <h2 class="proc-name">{{ mockApplication.procedureName }}</h2>
+          <div class="banner-meta-pills">
+            <span><i nz-icon nzType="bank"></i> UBND Phường Tân Phú, TP. Hồ Chí Minh</span>
+            <span><i nz-icon nzType="calendar"></i> Ngày nộp: <strong>{{ (mockApplication.submittedAt || mockApplication.createdAt) | date:'dd/MM/yyyy HH:mm' }}</strong></span>
+            @if (mockApplication.expectedCompletionDate) {
+              <span><i nz-icon nzType="clock-circle"></i> Hẹn trả: <strong>{{ mockApplication.expectedCompletionDate | date:'dd/MM/yyyy HH:mm' }}</strong></span>
+            }
+          </div>
+        </div>
+      </div>
+
+      <!-- Result 2-Column Grid -->
+      <div class="result-grid">
+        <!-- LEFT: Applicant Info & Payment -->
+        <div class="info-column">
+          <div class="info-card">
+            <div class="card-title">
+              <i nz-icon nzType="user" class="card-icon"></i>
+              <h3>Thông tin người nộp & Đề nghị giải quyết</h3>
+            </div>
+
+            <nz-descriptions nzBordered [nzColumn]="1" nzSize="middle" class="custom-desc-table">
+              <nz-descriptions-item nzTitle="Họ và tên công dân">
+                <strong>{{ mockApplication.citizenName || mockApplication.applicantName || 'Nguyễn Đức Tâm' }}</strong>
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Số CCCD / Định danh">
+                {{ mockApplication.citizenIdCard || mockApplication.applicantIdCard || '079205******' }}
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Số điện thoại liên hệ">
+                {{ mockApplication.citizenPhone || mockApplication.applicantPhone || '0901234567' }}
+              </nz-descriptions-item>
+              <nz-descriptions-item nzTitle="Cơ quan tiếp nhận">
+                Ủy ban Nhân dân Phường Tân Phú, TP. Hồ Chí Minh
+              </nz-descriptions-item>
+              @if (mockApplication.note || mockApplication.revisionNotes || mockApplication.rejectionReason) {
+                <nz-descriptions-item nzTitle="Ghi chú / Thông báo">
+                  <span class="text-note">{{ mockApplication.revisionNotes || mockApplication.rejectionReason || mockApplication.note }}</span>
+                </nz-descriptions-item>
+              }
+            </nz-descriptions>
+          </div>
+
+          <!-- QR Payment Card (If fee > 0) -->
+          @if (mockApplication.feeAmount && mockApplication.feeAmount > 0) {
+            <div class="payment-card-wrap">
+              <app-qr-payment
+                [applicationCode]="mockApplication.applicationCode"
+                [procedureName]="mockApplication.procedureName"
+                [feeAmount]="mockApplication.feeAmount"
+                [citizenName]="mockApplication.citizenName || ''"
+                mode="card"
+              ></app-qr-payment>
+            </div>
+          }
+        </div>
+
+        <!-- RIGHT: Timeline & History -->
+        <div class="timeline-column">
+          <div class="timeline-card-box">
+            <div class="card-title">
+              <i nz-icon nzType="history" class="card-icon"></i>
+              <h3>Lịch sử & Tiến trình giải quyết</h3>
+            </div>
+
+            <div class="timeline-content-body">
+              <app-application-timeline
+                [history]="mockApplication.history || []"
+                [currentStatus]="mockApplication.status"
+              >
+              </app-application-timeline>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
