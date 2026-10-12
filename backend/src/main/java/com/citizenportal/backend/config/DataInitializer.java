@@ -88,11 +88,11 @@ public class DataInitializer implements CommandLineRunner {
             log.info("Khởi tạo tài khoản Quản trị viên: admin / admin123");
         }
 
-        // 2. Staff (Cán bộ xử lý hồ sơ)
+        // 2. Staff (Cán bộ xử lý hồ sơ: staff & staff_001)
         if (userRepository.findByUsername("staff").isEmpty()) {
             User staff = User.builder()
                     .username("staff")
-                    .password(passwordEncoder.encode("staff123"))
+                    .password(passwordEncoder.encode("Staff@123"))
                     .fullName("Nguyễn Thị Mai (Cán Bộ Tiếp Nhận)")
                     .email("staff@dichvucong.gov.vn")
                     .phoneNumber("0908765432")
@@ -102,7 +102,23 @@ public class DataInitializer implements CommandLineRunner {
                     .roles(new HashSet<>(Collections.singletonList(staffRole)))
                     .build();
             userRepository.save(staff);
-            log.info("Khởi tạo tài khoản Cán bộ: staff / staff123");
+            log.info("Khởi tạo tài khoản Cán bộ: staff / Staff@123");
+        }
+
+        if (userRepository.findByUsername("staff_001").isEmpty()) {
+            User staff001 = User.builder()
+                    .username("staff_001")
+                    .password(passwordEncoder.encode("Staff@123"))
+                    .fullName("Nguyễn Thị Mai (Cán Bộ Tiếp Nhận)")
+                    .email("canbo@dichvucong.gov.vn")
+                    .phoneNumber("0908765432")
+                    .identityCardNumber("001099000003")
+                    .address("Bộ phận Một cửa - UBND Phường Tân Phú")
+                    .active(true)
+                    .roles(new HashSet<>(Collections.singletonList(staffRole)))
+                    .build();
+            userRepository.save(staff001);
+            log.info("Khởi tạo tài khoản Cán bộ: staff_001 / Staff@123");
         }
     }
 

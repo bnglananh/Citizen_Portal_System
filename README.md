@@ -60,7 +60,7 @@ Hệ thống đã tạo sẵn dữ liệu mẫu (Seed Data) cho cả 3 vai trò:
 | Vai trò | Tên đăng nhập / Email | Mật khẩu mặc định | Ghi chú |
 | :--- | :--- | :--- | :--- |
 | **Quản trị viên (Admin)** | `admin@dichvucong.gov.vn` (hoặc `admin`) | `Admin@123` | Toàn quyền quản trị hệ thống |
-| **Cán bộ xử lý (Staff)** | `canbo@dichvucong.gov.vn` (hoặc `canbo`) | `Staff@123` | Xử lý và phê duyệt hồ sơ |
+| **Cán bộ xử lý (Staff)** | `staff_001` (hoặc `canbo@dichvucong.gov.vn`) | `Staff@123` | Xử lý và phê duyệt hồ sơ |
 | **Người dân (Citizen)** | `nguyenvana@gmail.com` (hoặc `nguyenvana`) | `User@123` | Nộp và theo dõi hồ sơ |
 
 ---
@@ -175,4 +175,3 @@ Toàn bộ trao đổi dữ liệu giữa Frontend và Backend đều thông qua
   ```
 
 - **Bảo mật**: JWT Bearer Token, kiểm tra quyền 2 lớp (Role-based `@PreAuthorize` + Ownership Validation ở Service Layer để chống IDOR).
-
