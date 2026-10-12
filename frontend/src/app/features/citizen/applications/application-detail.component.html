@@ -50,11 +50,13 @@
       <div class="result-actions">
         @if (application.resultFilePath) {
           <a nz-button nzType="primary" nzSize="large" [href]="downloadUrl(application.resultFilePath)" target="_blank" class="btn-download-cert">
-            <i nz-icon nzType="download"></i> Tải Kết quả điện tử (PDF Ký số)
+            <i nz-icon nzType="download"></i>
+            <span>Tải Kết quả điện tử (PDF Ký số)</span>
           </a>
         } @else {
           <button nz-button nzType="primary" nzSize="large" class="btn-download-cert" disabled>
-            <i nz-icon nzType="check"></i> Đã phê duyệt hoàn tất
+            <i nz-icon nzType="check"></i>
+            <span>Đã phê duyệt hoàn tất</span>
           </button>
         }
       </div>

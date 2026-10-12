@@ -39,8 +39,8 @@ public class GeminiClient {
      */
     public String generateContent(String systemInstruction, String userMessage, List<Map<String, String>> conversationHistory) {
         String apiKey = geminiConfig.getApiKey();
-        if (!StringUtils.hasText(apiKey) || !apiKey.startsWith("AIza")) {
-            log.debug("Gemini API Key is not configured or not a standard Google AI Key. Using local Fallback Engine.");
+        if (!StringUtils.hasText(apiKey) || apiKey.trim().isEmpty()) {
+            log.debug("Gemini API Key is not configured. Using local Fallback Engine.");
             return null;
         }
 

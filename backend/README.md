@@ -49,10 +49,13 @@ gemini:
 Mở terminal tại thư mục `backend` và chạy:
 
 - **Trên Windows (PowerShell / CMD)**:
+
   ```powershell
   .\mvnw.cmd spring-boot:run
   ```
+
 - **Trên Linux / MacOS**:
+
   ```bash
   ./mvnw spring-boot:run
   ```
@@ -64,9 +67,9 @@ Mở terminal tại thư mục `backend` và chạy:
 
 ## 🔑 4. Tài Khoản Mẫu Đăng Nhập
 
-- **Admin**: `admin@dichvucong.gov.vn` / `Admin@123`
-- **Cán bộ (Staff)**: `canbo@dichvucong.gov.vn` / `Staff@123`
-- **Công dân (Citizen)**: `nguyenvana@gmail.com` / `User@123`
+- **Admin**: `admin@dichvucong.gov.vn` (hoặc `admin`) / `Admin@123`
+- **Cán bộ (Staff)**: `staff_001` (hoặc `canbo@dichvucong.gov.vn`) / `Staff@123`
+- **Công dân (Citizen)**: `nguyenvana@gmail.com` (hoặc `nguyenvana`) / `User@123`
 
 ---
 
@@ -88,4 +91,3 @@ Khi muốn đóng gói backend để triển khai hoặc gửi nộp đồ án:
 ```powershell
 .\mvnw.cmd test
 ```
-
