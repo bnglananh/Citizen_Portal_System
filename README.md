@@ -51,6 +51,13 @@ Hệ thống được xây dựng hoàn chỉnh với **3 phân quyền người
 - Tự động sinh thông báo khi hồ sơ thay đổi trạng thái.
 - Huy hiệu (Badge) đếm số lượng chưa đọc trên Header, trang trung tâm thông báo có bộ lọc tab và phân trang trực quan.
 
+### 🆘 F. Kênh Hỗ Trợ Khẩn Cấp Trực Tiếp Với Cán Bộ (Live Support Chat)
+
+- 💬 **Cửa sổ Chat Trực Tiếp Khẩn Cấp**: Dành riêng cho người dân khi gặp sự cố kỹ thuật hoặc trục trặc gấp trong quá trình nộp hồ sơ trực tuyến.
+- 🎲 **Phân công Cán bộ Ngẫu nhiên (Random Staff Assignment)**: Khi công dân mở phiên hỏi đáp, hệ thống tự động gán ngẫu nhiên một Cán bộ chuyên trách (`ROLE_STAFF`). Cuộc trò chuyện này được giữ độc quyền cho cán bộ đó, Admin và các cán bộ khác hoàn toàn không có quyền xem hay trả lời để đảm bảo tính riêng tư và chuyên môn xử lý.
+- 📎 **Đính kèm Đa phương tiện & Tài liệu**: Cho phép cả người dân và cán bộ tải lên hình ảnh minh chứng (JPG, PNG) và tài liệu pháp lý (PDF, Word, DOCX) trực tiếp trong luồng chat.
+- 🖥️ **Bàn làm việc Cán bộ (Staff Workspace)**: Cán bộ có thanh điều hướng riêng bên sidebar (*"Tin nhắn hỗ trợ (Khẩn cấp)"* tại `/staff/support-chat`), quản lý danh sách các công dân được phân công, gửi phản hồi và bấm hoàn tất phiên hỗ trợ. Role Admin không có menu này và bị chặn truy cập.
+
 ---
 
 ## 🔑 2. Tài Khoản Thử Nghiệm Hệ Thống (Demo Accounts)
@@ -82,6 +89,7 @@ HeThongDichVuCong/
 │   │   ├── notification/  # Hệ thống thông báo in-app
 │   │   ├── dashboard/     # Thống kê số liệu cho Citizen, Staff, Admin
 │   │   ├── chatbot/       # Tích hợp Gemini AI, Fallback engine, Persona settings
+│   │   ├── support/       # Kênh chat hỗ trợ khẩn cấp Citizen - Staff, random assignment, upload tệp
 │   │   ├── faq/           # Bộ câu hỏi thường gặp FAQ
 │   │   ├── common/        # Exception handler, DTO chuẩn, ApiResponse
 │   │   └── config/        # SecurityConfig, CorsConfig, GeminiConfig, DataInitializer
@@ -90,10 +98,10 @@ HeThongDichVuCong/
 │
 ├── frontend/              # Frontend Angular 19 + NG-ZORRO (Ant Design)
 │   ├── src/app/
-│   │   ├── core/          # Auth, JWT Interceptor, Error Interceptor, Guards, Services
-│   │   ├── shared/        # Components dùng chung (header, footer, status tag, loading)
+│   │   ├── core/          # Auth, JWT Interceptor, Error Interceptor, Guards, Services (support.service...)
+│   │   ├── shared/        # Components dùng chung (QR payment, support-chat-widget, chatbot-widget)
 │   │   ├── layouts/       # MainLayout (Citizen), StaffLayout, AdminLayout
-│   │   ├── features/      # Auth, Citizen, Staff, Admin, Procedures, Applications, Chatbot, FAQ, Tracking, Dashboard
+│   │   ├── features/      # Auth, Citizen, Staff (support-chat...), Admin, Procedures, Applications, Tracking
 │   │   └── app.routes.ts  # Cấu hình phân tuyến theo quyền
 │   ├── package.json
 │   └── angular.json

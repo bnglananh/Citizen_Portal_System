@@ -67,3 +67,17 @@
 - Quản trị cấu hình xưng hô và tham số Trợ lý AI.
 - Giám sát dashboard hoạt động và hiệu suất xử lý hồ sơ của toàn bộ phường/xã.
 
+## Module 11 — Kênh Hỗ Trợ Khẩn Cấp Trực Tiếp Cán Bộ - Công Dân (Live Support Chat)
+
+- **Mục đích nghiệp vụ**: Cung cấp kênh trao đổi trực tiếp, tức thời khi người dân gặp vướng mắc, sự cố đột xuất hoặc vướng mắc kỹ thuật trong quá trình nộp hồ sơ, đóng vai trò giải quyết sự vụ khẩn cấp song song với Trợ lý ảo AI.
+- **Cơ chế phân bổ cán bộ (Exclusive Random Assignment)**:
+  - Khi người dân mở cửa sổ chat hỗ trợ, nếu chưa có phiên nào đang mở (`OPEN`), hệ thống tự động chọn ngẫu nhiên một Cán bộ phụ trách (`ROLE_STAFF`) có sẵn trong hệ thống và khởi tạo phiên kết nối.
+  - Sau khi phiên đã được tiếp nhận và gán cho một cán bộ cụ thể, **chỉ duy nhất cán bộ đó (`ROLE_STAFF`)** mới nhìn thấy cuộc hội thoại này trên danh sách của mình; Admin và các cán bộ khác hoàn toàn không có quyền xem hay trả lời tin nhắn hỗ trợ.
+- **Trao đổi đa phương tiện (File & Image Upload)**:
+  - Cho phép người dân và cán bộ gửi tin nhắn văn bản kèm hình ảnh chụp lỗi màn hình (JPG, PNG) hoặc tài liệu mẫu / hướng dẫn (PDF, Word, Zip).
+  - Tệp được kiểm tra định dạng, giới hạn dung lượng và lưu trữ bảo mật qua hệ thống lưu trữ tệp backend.
+- **Giao diện & Tiện ích người dùng**:
+  - **Công dân**: Nút Floating Action Button (FAB) màu cam-đỏ nổi bật góc dưới màn hình, tích hợp cửa sổ chat thu gọn tiện lợi, tự động đồng bộ tin nhắn qua cơ chế polling.
+  - **Cán bộ (`ROLE_STAFF`)**: Mục điều hướng riêng trên Sidebar ("Tin nhắn hỗ trợ (Khẩn cấp)") dẫn tới Workspace hỗ trợ chuyên biệt: danh sách người dân đang phụ trách bên trái và khung chat trực tiếp 2 chiều kèm nút "Hoàn tất hỗ trợ" bên phải. Role Admin không hiển thị menu này.
+
+

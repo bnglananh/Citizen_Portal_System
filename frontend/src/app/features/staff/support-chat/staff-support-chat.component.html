@@ -1,0 +1,255 @@
+<div class="staff-chat-page-wrapper">
+  <!-- Page Header -->
+  <div class="page-top-bar">
+    <div>
+      <h1 class="page-title">Tiếp nhận & Hỗ trợ Khẩn cấp Trực tiếp</h1>
+      <p class="page-desc">Kênh hỗ trợ giải đáp trục trặc cho công dân theo cơ chế phân công ngẫu nhiên trực tiếp</p>
+    </div>
+    <div class="top-meta-badge">
+      <nz-tag nzColor="error"><i nz-icon nzType="thunderbolt"></i> Kênh trực ban khẩn cấp</nz-tag>
+      <span class="total-convs-txt">Tổng số: <strong>{{ conversations.length }}</strong> phiên phụ trách</span>
+    </div>
+  </div>
+
+  <!-- Workspace Container (2 Cột) -->
+  <div class="chat-workspace-grid">
+    <!-- CỘT TRÁI: Danh sách các công dân cần hỗ trợ -->
+    <div class="conversations-sidebar-card">
+      <div class="sidebar-search-box">
+        <nz-input-wrapper>
+          <span nzInputPrefix><i nz-icon nzType="search"></i></span>
+          <input
+            type="text"
+            nz-input
+            placeholder="Tìm tên công dân, số ĐT..."
+            [(ngModel)]="searchQuery"
+            (ngModelChange)="filterConversations()"
+          />
+        </nz-input-wrapper>
+      </div>
+
+      <div class="conversations-list">
+        @if (isLoadingConversations) {
+          <div class="loading-box">
+            <i nz-icon nzType="loading"></i>
+            <span>Đang tải danh sách...</span>
+          </div>
+        } @else if (filteredConversations.length === 0) {
+          <div class="empty-box">
+            <i nz-icon nzType="inbox" class="empty-icon"></i>
+            <p>Không có phiên hỗ trợ nào được phân công lúc này.</p>
+          </div>
+        } @else {
+          @for (conv of filteredConversations; track conv.id) {
+            <div
+              class="conv-item-card"
+              [class.active]="selectedConversation?.id === conv.id"
+              (click)="selectConversation(conv)"
+            >
+              <div class="conv-avatar">
+                <i nz-icon nzType="user"></i>
+                @if (conv.status === 'OPEN') {
+                  <span class="online-dot" title="Đang mở"></span>
+                }
+              </div>
+
+              <div class="conv-content">
+                <div class="conv-header-row">
+                  <span class="citizen-name" [title]="conv.citizenName">{{ conv.citizenName }}</span>
+                  <span class="conv-time">{{ conv.updatedAt | date:'HH:mm' }}</span>
+                </div>
+
+                <div class="conv-sub-row">
+                  <span class="conv-phone">
+                    <i nz-icon nzType="phone"></i> {{ conv.citizenPhone || 'Chưa có SĐT' }}
+                  </span>
+                  @if (conv.status === 'RESOLVED') {
+                    <nz-tag nzColor="success" class="status-mini-tag">Đã xong</nz-tag>
+                  } @else if (!conv.staffId) {
+                    <nz-tag nzColor="warning" class="status-mini-tag">Chờ nhận</nz-tag>
+                  } @else {
+                    <nz-tag nzColor="processing" class="status-mini-tag">Đang hỗ trợ</nz-tag>
+                  }
+                </div>
+
+                <div class="conv-last-msg-row">
+                  <p class="last-msg-text">
+                    {{ conv.lastMessage?.content || (conv.lastMessage?.attachmentName ? '[Tệp đính kèm]' : 'Bắt đầu cuộc trò chuyện...') }}
+                  </p>
+                  @if (conv.unreadCount > 0) {
+                    <span class="unread-pill">{{ conv.unreadCount }}</span>
+                  }
+                </div>
+              </div>
+            </div>
+          }
+        }
+      </div>
+    </div>
+
+    <!-- CỘT PHẢI: Khung chat chi tiết với công dân được chọn -->
+    <div class="chat-main-card">
+      @if (!selectedConversation) {
+        <div class="no-selection-placeholder">
+          <i nz-icon nzType="message" class="huge-icon"></i>
+          <h3>Chọn một cuộc trò chuyện từ danh sách bên trái</h3>
+          <p>Mỗi cuộc trò chuyện đã được phân công ngẫu nhiên cho bạn sẽ chỉ duy nhất bạn phản hồi với người dân.</p>
+        </div>
+      } @else {
+        <!-- Chat Detail Header -->
+        <div class="chat-main-header">
+          <div class="citizen-detail-info">
+            <div class="large-avatar">
+              <i nz-icon nzType="user"></i>
+            </div>
+            <div>
+              <h3>{{ selectedConversation.citizenName }}</h3>
+              <div class="citizen-badges">
+                <span><i nz-icon nzType="phone"></i> {{ selectedConversation.citizenPhone || 'Không có SĐT' }}</span>
+                <span><i nz-icon nzType="mail"></i> {{ selectedConversation.citizenEmail || 'Chưa cung cấp email' }}</span>
+                <span class="session-code-tag">Phiên #{{ selectedConversation.id }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="header-right-actions">
+            @if (selectedConversation.status === 'OPEN') {
+              <button
+                nz-button
+                nzType="default"
+                class="btn-resolve"
+                nz-popconfirm
+                nzPopconfirmTitle="Xác nhận đã giải đáp xong và hoàn tất phiên hỗ trợ này?"
+                nzOkText="Đồng ý"
+                nzCancelText="Hủy"
+                (nzOnConfirm)="resolveConversation()"
+              >
+                <i nz-icon nzType="check-circle" class="text-success"></i> Hoàn tất hỗ trợ
+              </button>
+            } @else {
+              <nz-tag nzColor="success"><i nz-icon nzType="check"></i> Đã hoàn tất hỗ trợ</nz-tag>
+            }
+          </div>
+        </div>
+
+        <!-- Chat Messages Area -->
+        <div class="chat-main-body" #scrollContainer>
+          @if (isLoadingMessages) {
+            <div class="loading-box">
+              <i nz-icon nzType="loading"></i>
+              <span>Đang tải tin nhắn...</span>
+            </div>
+          } @else {
+            <div class="messages-flow">
+              @for (msg of messages; track msg.id) {
+                <div class="chat-row" [class.staff-sent]="msg.senderRole !== 'ROLE_CITIZEN'" [class.citizen-sent]="msg.senderRole === 'ROLE_CITIZEN'">
+                  @if (msg.senderRole === 'ROLE_CITIZEN') {
+                    <div class="msg-avt citizen-avt">
+                      <i nz-icon nzType="user"></i>
+                    </div>
+                  }
+
+                  <div class="bubble-wrap" [class.bubble-staff]="msg.senderRole !== 'ROLE_CITIZEN'" [class.bubble-citizen]="msg.senderRole === 'ROLE_CITIZEN'">
+                    <div class="bubble-sender">
+                      {{ msg.senderRole === 'ROLE_CITIZEN' ? selectedConversation.citizenName : 'Bạn (Cán bộ phụ trách)' }}
+                    </div>
+
+                    @if (msg.content) {
+                      <div class="bubble-text">{{ msg.content }}</div>
+                    }
+
+                    <!-- Attachment -->
+                    @if (msg.attachmentUrl) {
+                      <div class="bubble-attachment">
+                        @if (isImage(msg.attachmentType, msg.attachmentUrl)) {
+                          <div class="img-box">
+                            <a [href]="getDownloadUrl(msg.attachmentUrl)" target="_blank" class="img-link" title="Bấm để mở ảnh kích thước gốc">
+                              <img [src]="getDownloadUrl(msg.attachmentUrl)" [alt]="msg.attachmentName || 'Hình ảnh đính kèm'" class="chat-img" />
+                              <div class="img-caption-bar">
+                                <i nz-icon nzType="picture" nzTheme="outline"></i>
+                                <span class="caption-text">{{ msg.attachmentName || 'Hình ảnh đính kèm' }}</span>
+                              </div>
+                            </a>
+                          </div>
+                        } @else {
+                          <a [href]="getDownloadUrl(msg.attachmentUrl)" target="_blank" class="doc-card">
+                            <i nz-icon nzType="file-text" class="doc-ico"></i>
+                            <div class="doc-meta">
+                              <span class="name">{{ msg.attachmentName || 'Tài liệu đính kèm' }}</span>
+                              <span class="action"><i nz-icon nzType="download"></i> Tải về tệp</span>
+                            </div>
+                          </a>
+                        }
+                      </div>
+                    }
+
+                    <div class="bubble-time">{{ msg.createdAt | date:'HH:mm, dd/MM/yyyy' }}</div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- File preview before send -->
+        @if (selectedFile) {
+          <div class="staff-file-preview-strip">
+            <div class="chip">
+              @if (selectedFilePreview) {
+                <img [src]="selectedFilePreview" alt="Thumb" class="thumb" />
+              } @else {
+                <i nz-icon nzType="file" class="f-ico"></i>
+              }
+              <span class="f-name">{{ selectedFile.name }}</span>
+              <button type="button" class="btn-del" (click)="removeSelectedFile()">
+                <i nz-icon nzType="close"></i>
+              </button>
+            </div>
+          </div>
+        }
+
+        <!-- Chat Input Footer -->
+        <div class="chat-main-footer">
+          <input
+            type="file"
+            #fileInput
+            (change)="onFileSelected($event)"
+            style="display: none;"
+            accept="image/*,.pdf,.doc,.docx"
+          />
+
+          <button
+            nz-button
+            nzType="text"
+            class="btn-clip"
+            (click)="fileInput.click()"
+            title="Đính kèm ảnh hoặc tài liệu hướng dẫn"
+          >
+            <i nz-icon nzType="paper-clip"></i>
+          </button>
+
+          <input
+            type="text"
+            nz-input
+            [(ngModel)]="inputMessage"
+            placeholder="Nhập nội dung giải đáp cho công dân..."
+            (keyup.enter)="sendMessage()"
+            [disabled]="isSending || selectedConversation.status === 'RESOLVED'"
+            class="input-box"
+          />
+
+          <button
+            nz-button
+            nzType="primary"
+            class="btn-send-reply"
+            (click)="sendMessage()"
+            [nzLoading]="isSending"
+            [disabled]="(!inputMessage.trim() && !selectedFile) || selectedConversation.status === 'RESOLVED'"
+          >
+            <i nz-icon nzType="send"></i> Gửi phản hồi
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</div>

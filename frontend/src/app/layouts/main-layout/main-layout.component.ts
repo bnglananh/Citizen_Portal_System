@@ -15,6 +15,7 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { AuthService } from '../../core/auth/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ChatbotWidgetComponent } from '../../features/chatbot/chatbot-widget/chatbot-widget.component';
+import { SupportChatWidgetComponent } from '../../shared/components/support-chat-widget/support-chat-widget.component';
 
 @Component({
   selector: 'app-main-layout',
@@ -33,7 +34,8 @@ import { ChatbotWidgetComponent } from '../../features/chatbot/chatbot-widget/ch
     NzTagModule,
     NzDividerModule,
     NzDrawerModule,
-    ChatbotWidgetComponent
+    ChatbotWidgetComponent,
+    SupportChatWidgetComponent
   ],
   templateUrl: './main-layout.component.html',
   styleUrls: ['./main-layout.component.scss']

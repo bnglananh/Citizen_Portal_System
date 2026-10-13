@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { catchError, finalize, of, timeout } from 'rxjs';
 import { NzButtonModule } from 'ng-zorro-antd/button';
@@ -45,6 +45,7 @@ export class CategoryManagementComponent implements OnInit {
   private fb = inject(FormBuilder);
   private message = inject(NzMessageService);
   private procedureService = inject(ProcedureService);
+  private cdr = inject(ChangeDetectorRef);
 
   private readonly DEFAULT_CATEGORIES: ProcedureCategory[] = [
     {
@@ -103,7 +104,7 @@ export class CategoryManagementComponent implements OnInit {
   isModalVisible = false;
   isEditing = false;
   currentId: number | null = null;
-  isLoading = false;
+  isLoading = signal<boolean>(false);
 
   availableIcons = [
     { label: 'Người / Hộ tịch (user)', value: 'user' },
@@ -130,16 +131,19 @@ export class CategoryManagementComponent implements OnInit {
   }
 
   loadCategories(): void {
-    this.isLoading = true;
+    if (this.categories.length === 0) {
+      this.isLoading.set(true);
+    }
     this.procedureService.getAllCategoriesForAdmin().pipe(
-      timeout(3500),
+      timeout(3000),
       catchError(() => this.procedureService.getCategories().pipe(
-        timeout(3500),
+        timeout(3000),
         catchError(() => of(this.DEFAULT_CATEGORIES))
       )),
       finalize(() => {
-        this.isLoading = false;
+        this.isLoading.set(false);
         this.filterCategories();
+        this.cdr.detectChanges();
       })
     ).subscribe({
       next: (cats) => {
@@ -148,11 +152,17 @@ export class CategoryManagementComponent implements OnInit {
         } else {
           this.categories = [...this.DEFAULT_CATEGORIES];
         }
+        this.filterCategories();
+        this.isLoading.set(false);
+        this.cdr.detectChanges();
       },
       error: () => {
         if (!this.categories || this.categories.length === 0) {
           this.categories = [...this.DEFAULT_CATEGORIES];
         }
+        this.filterCategories();
+        this.isLoading.set(false);
+        this.cdr.detectChanges();
       }
     });
   }
@@ -196,7 +206,8 @@ export class CategoryManagementComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
+    this.isLoading.set(true);
+    this.cdr.detectChanges();
     const val = this.categoryForm.value;
 
     const payload = {
@@ -211,9 +222,10 @@ export class CategoryManagementComponent implements OnInit {
       this.procedureService.updateCategory(this.currentId, payload).subscribe({
         next: (updated) => {
           this.message.success('Cập nhật lĩnh vực thành công!');
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.isModalVisible = false;
           this.loadCategories();
+          this.cdr.detectChanges();
         },
         error: (err) => {
           // Local optimistic update
@@ -226,16 +238,18 @@ export class CategoryManagementComponent implements OnInit {
           } else {
             this.message.error(err?.error?.message || 'Cập nhật lĩnh vực thất bại');
           }
-          this.isLoading = false;
+          this.isLoading.set(false);
+          this.cdr.detectChanges();
         }
       });
     } else {
       this.procedureService.createCategory(payload).subscribe({
         next: (created) => {
           this.message.success('Tạo mới lĩnh vực thành công!');
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.isModalVisible = false;
           this.loadCategories();
+          this.cdr.detectChanges();
         },
         error: (err) => {
           // Local fallback addition
@@ -247,8 +261,9 @@ export class CategoryManagementComponent implements OnInit {
           this.categories.unshift(newCat);
           this.filterCategories();
           this.message.success('Tạo mới lĩnh vực thành công!');
-          this.isLoading = false;
+          this.isLoading.set(false);
           this.isModalVisible = false;
+          this.cdr.detectChanges();
         }
       });
     }
@@ -256,7 +271,8 @@ export class CategoryManagementComponent implements OnInit {
 
   deleteCategory(cat: ProcedureCategory): void {
     if (!cat.id) return;
-    this.isLoading = true;
+    this.isLoading.set(true);
+    this.cdr.detectChanges();
     this.procedureService.deleteCategory(cat.id).subscribe({
       next: () => {
         this.message.success(`Đã xóa/ẩn lĩnh vực ${cat.name}`);
@@ -267,7 +283,8 @@ export class CategoryManagementComponent implements OnInit {
         this.categories = this.categories.filter(c => c.id !== cat.id);
         this.filterCategories();
         this.message.success(`Đã xóa/ẩn lĩnh vực ${cat.name}`);
-        this.isLoading = false;
+        this.isLoading.set(false);
+        this.cdr.detectChanges();
       }
     });
   }

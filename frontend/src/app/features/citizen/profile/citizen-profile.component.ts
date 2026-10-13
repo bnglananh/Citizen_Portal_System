@@ -40,6 +40,10 @@ export class CitizenProfileComponent {
   isEditProfileModalVisible = false;
   isLoading = false;
 
+  currentPasswordVisible = false;
+  newPasswordVisible = false;
+  confirmNewPasswordVisible = false;
+
   passwordForm: FormGroup = this.fb.group({
     currentPassword: ['', [Validators.required]],
     newPassword: ['', [Validators.required, Validators.minLength(6)]],

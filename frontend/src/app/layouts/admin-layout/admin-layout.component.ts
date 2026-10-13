@@ -16,6 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../core/auth/auth.service';
 import { NotificationService, AppNotification } from '../../core/services/notification.service';
 import { ChatbotWidgetComponent } from '../../features/chatbot/chatbot-widget/chatbot-widget.component';
+import { SupportChatWidgetComponent } from '../../shared/components/support-chat-widget/support-chat-widget.component';
 
 @Component({
   selector: 'app-admin-layout',
@@ -35,7 +36,8 @@ import { ChatbotWidgetComponent } from '../../features/chatbot/chatbot-widget/ch
     NzTagModule,
     NzInputModule,
     NzTooltipModule,
-    ChatbotWidgetComponent
+    ChatbotWidgetComponent,
+    SupportChatWidgetComponent
   ],
   templateUrl: './admin-layout.component.html',
   styleUrls: ['./admin-layout.component.scss']

@@ -168,6 +168,15 @@ export const routes: Routes = [
             (m) => m.StaffApplicationReviewComponent
           ),
       },
+      {
+        path: 'support-chat',
+        canActivate: [roleGuard],
+        data: { roles: ['ROLE_STAFF'] },
+        loadComponent: () =>
+          import('./features/staff/support-chat/staff-support-chat.component').then(
+            (m) => m.StaffSupportChatComponent
+          ),
+      },
     ],
   },
 

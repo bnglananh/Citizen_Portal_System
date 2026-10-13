@@ -78,6 +78,17 @@ Hệ thống Dịch vụ công trực tuyến sử dụng chuẩn kiến trúc *
 - `PUT /api/admin/faqs/{id}` — [ADMIN] Cập nhật câu hỏi FAQ
 - `DELETE /api/admin/faqs/{id}` — [ADMIN] Xóa câu hỏi FAQ
 
+### 1.8. Module Hỗ trợ Khẩn cấp Trực tiếp Cán bộ - Công dân (`/api/support`)
+
+- `GET /api/support/citizen/current` — [CITIZEN] Lấy phiên hỗ trợ đang mở hoặc tự động phân công ngẫu nhiên một Cán bộ tiếp nhận
+- `GET /api/support/citizen/conversations/{id}/messages` — [CITIZEN] Tải toàn bộ tin nhắn trao đổi trong phiên
+- `POST /api/support/citizen/conversations/{id}/messages` — [CITIZEN] Gửi tin nhắn kèm đính kèm tệp / hình ảnh (`multipart/form-data`)
+- `POST /api/support/citizen/conversations/{id}/resolve` — [CITIZEN] Đánh dấu hoàn tất phiên hỗ trợ khẩn cấp
+- `GET /api/support/staff/conversations` — [STAFF] Lấy danh sách các cuộc trò chuyện được phân công cho chính cán bộ đó (độc quyền phân công, Admin và cán bộ khác không có quyền xem/trả lời)
+- `GET /api/support/staff/conversations/{id}/messages` — [STAFF] Tải chi tiết tin nhắn trong cuộc trò chuyện
+- `POST /api/support/staff/conversations/{id}/messages` — [STAFF] Cán bộ gửi phản hồi và gửi tài liệu / hình ảnh hướng dẫn (`multipart/form-data`)
+- `POST /api/support/staff/conversations/{id}/resolve` — [STAFF] Cán bộ đóng phiên hỗ trợ sau khi đã giải quyết sự cố
+
 ---
 
 ## 2. Quy Chuẩn Response Chuẩn Hóa

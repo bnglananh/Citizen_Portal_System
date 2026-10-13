@@ -71,6 +71,10 @@
           <i nz-icon nzType="audit" nzTheme="outline"></i>
           <span>Hồ sơ thẩm định</span>
         </li>
+        <li nz-menu-item nzMatchRouter routerLink="/staff/support-chat" nz-tooltip [nzTooltipTitle]="isCollapsed ? 'Tin nhắn hỗ trợ (Khẩn cấp)' : null" nzTooltipPlacement="right">
+          <i nz-icon nzType="message" nzTheme="outline"></i>
+          <span>Tin nhắn hỗ trợ (Khẩn cấp)</span>
+        </li>
       }
 
       <!-- 3. CITIZEN MENU ITEMS -->
@@ -217,5 +221,8 @@
 
     <!-- AI Chatbot Assistant Widget -->
     <app-chatbot-widget></app-chatbot-widget>
+
+    <!-- Urgent Direct Support Chat Widget -->
+    <app-support-chat-widget></app-support-chat-widget>
   </nz-layout>
 </nz-layout>

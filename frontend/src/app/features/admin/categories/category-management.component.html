@@ -31,7 +31,7 @@
     <nz-table
       #catTable
       [nzData]="filteredCategories"
-      [nzLoading]="isLoading"
+      [nzLoading]="isLoading()"
       [nzPageSize]="10"
       [nzShowSizeChanger]="true"
       [nzPageSizeOptions]="[5, 10, 20, 50]"
@@ -109,7 +109,7 @@
     [nzTitle]="isEditing ? 'CHỈNH SỬA LĨNH VỰC' : 'THÊM MỚI LĨNH VỰC'"
     (nzOnCancel)="isModalVisible = false"
     (nzOnOk)="saveCategory()"
-    [nzOkLoading]="isLoading"
+    [nzOkLoading]="isLoading()"
     nzOkText="Lưu thông tin"
     nzCancelText="Hủy bỏ"
     nzWidth="540px"

@@ -96,7 +96,20 @@
           <nz-form-control nzErrorTip="Mật khẩu tối thiểu 6 ký tự">
             <nz-input-wrapper>
               <span nzInputPrefix><i nz-icon nzType="lock"></i></span>
-              <input type="password" nz-input formControlName="password" placeholder="Mật khẩu" />
+              <input
+                [type]="passwordVisible ? 'text' : 'password'"
+                nz-input
+                formControlName="password"
+                placeholder="Mật khẩu"
+              />
+              <span
+                nzInputSuffix
+                class="password-toggle-icon"
+                (click)="passwordVisible = !passwordVisible"
+                [title]="passwordVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+              >
+                <i nz-icon [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"></i>
+              </span>
             </nz-input-wrapper>
           </nz-form-control>
         </nz-form-item>
@@ -108,7 +121,20 @@
         <nz-form-control nzErrorTip="Mật khẩu xác nhận không khớp">
           <nz-input-wrapper>
             <span nzInputPrefix><i nz-icon nzType="safety"></i></span>
-            <input type="password" nz-input formControlName="confirmPassword" placeholder="Nhập lại mật khẩu" />
+            <input
+              [type]="confirmPasswordVisible ? 'text' : 'password'"
+              nz-input
+              formControlName="confirmPassword"
+              placeholder="Nhập lại mật khẩu"
+            />
+            <span
+              nzInputSuffix
+              class="password-toggle-icon"
+              (click)="confirmPasswordVisible = !confirmPasswordVisible"
+              [title]="confirmPasswordVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+            >
+              <i nz-icon [nzType]="confirmPasswordVisible ? 'eye-invisible' : 'eye'"></i>
+            </span>
           </nz-input-wrapper>
         </nz-form-control>
       </nz-form-item>
