@@ -58,21 +58,69 @@
         <nz-form-item>
           <nz-form-label nzRequired>Mật khẩu hiện tại</nz-form-label>
           <nz-form-control nzErrorTip="Vui lòng nhập mật khẩu hiện tại">
-            <input type="password" nz-input formControlName="currentPassword" />
+            <nz-input-wrapper>
+              <span nzInputPrefix><i nz-icon nzType="lock"></i></span>
+              <input
+                [type]="currentPasswordVisible ? 'text' : 'password'"
+                nz-input
+                formControlName="currentPassword"
+                placeholder="Nhập mật khẩu hiện tại"
+              />
+              <span
+                nzInputSuffix
+                class="password-toggle-icon"
+                (click)="currentPasswordVisible = !currentPasswordVisible"
+                [title]="currentPasswordVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+              >
+                <i nz-icon [nzType]="currentPasswordVisible ? 'eye-invisible' : 'eye'"></i>
+              </span>
+            </nz-input-wrapper>
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
           <nz-form-label nzRequired>Mật khẩu mới (tối thiểu 6 ký tự)</nz-form-label>
           <nz-form-control nzErrorTip="Mật khẩu mới tối thiểu 6 ký tự">
-            <input type="password" nz-input formControlName="newPassword" />
+            <nz-input-wrapper>
+              <span nzInputPrefix><i nz-icon nzType="lock"></i></span>
+              <input
+                [type]="newPasswordVisible ? 'text' : 'password'"
+                nz-input
+                formControlName="newPassword"
+                placeholder="Nhập mật khẩu mới"
+              />
+              <span
+                nzInputSuffix
+                class="password-toggle-icon"
+                (click)="newPasswordVisible = !newPasswordVisible"
+                [title]="newPasswordVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+              >
+                <i nz-icon [nzType]="newPasswordVisible ? 'eye-invisible' : 'eye'"></i>
+              </span>
+            </nz-input-wrapper>
           </nz-form-control>
         </nz-form-item>
 
         <nz-form-item>
           <nz-form-label nzRequired>Xác nhận lại mật khẩu mới</nz-form-label>
           <nz-form-control nzErrorTip="Vui lòng nhập lại mật khẩu mới">
-            <input type="password" nz-input formControlName="confirmNewPassword" />
+            <nz-input-wrapper>
+              <span nzInputPrefix><i nz-icon nzType="safety"></i></span>
+              <input
+                [type]="confirmNewPasswordVisible ? 'text' : 'password'"
+                nz-input
+                formControlName="confirmNewPassword"
+                placeholder="Xác nhận lại mật khẩu mới"
+              />
+              <span
+                nzInputSuffix
+                class="password-toggle-icon"
+                (click)="confirmNewPasswordVisible = !confirmNewPasswordVisible"
+                [title]="confirmNewPasswordVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+              >
+                <i nz-icon [nzType]="confirmNewPasswordVisible ? 'eye-invisible' : 'eye'"></i>
+              </span>
+            </nz-input-wrapper>
           </nz-form-control>
         </nz-form-item>
       </form>

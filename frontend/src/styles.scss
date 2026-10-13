@@ -7,8 +7,8 @@
   --color-bg-hover: #FAF7F0;
 
   --color-text-primary: #1C1C1A;
-  --color-text-secondary: #5C5B56;
-  --color-text-muted: #8C8A82;
+  --color-text-secondary: #3D3B36;
+  --color-text-muted: #4F4B43;
 
   --color-brand-primary: #2F5D45;
   --color-brand-primary-hover: #264B38;
@@ -29,8 +29,8 @@
   --dvc-bg-base: #F3EEE4;
   --dvc-bg-card: #FFFFFF;
   --dvc-text-primary: #1C1C1A;
-  --dvc-text-secondary: #5C5B56;
-  --dvc-text-muted: #8C8A82;
+  --dvc-text-secondary: #3D3B36;
+  --dvc-text-muted: #4F4B43;
   --dvc-border-color: #E2DDD2;
   --dvc-error: #9E2A2B;
   --dvc-radius-sm: 6px;
@@ -155,34 +155,7 @@ html, body {
   animation: timelinePulse 2s infinite ease-in-out;
 }
 
-/* Floating AI Chatbot Button */
-.chatbot-fab-btn {
-  position: fixed;
-  right: 24px;
-  bottom: 24px;
-  z-index: 1000;
-  background-color: var(--color-brand-primary);
-  color: #FFFFFF;
-  border-radius: 50%;
-  width: 56px;
-  height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-floating);
-  cursor: pointer;
-  border: none;
-  transition: var(--transition-fast);
 
-  &:hover {
-    background-color: var(--color-brand-primary-hover);
-    transform: translateY(-2px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
 
 /* Ant Design Tag & Badge Enhancements */
 .ant-tag {
@@ -227,6 +200,64 @@ html, body {
   color: #686660 !important;
 }
 
+/* Password Visibility Toggle */
+.password-toggle-icon {
+  cursor: pointer;
+  color: var(--color-text-muted, #4F4B43);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: var(--color-brand-primary, #2F5D45);
+    transform: scale(1.1);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
+
+/* Global Typography Refinements for Subtitles & Helper Text */
+.page-desc,
+.page-subtitle {
+  font-size: 0.875rem !important;
+  color: var(--dvc-text-muted) !important;
+  font-weight: 500 !important;
+  line-height: 1.5;
+}
+
+.card-subtitle,
+.section-subtitle,
+.card-header-banner p {
+  font-size: 0.825rem !important;
+  color: var(--dvc-text-muted) !important;
+  font-weight: 500 !important;
+  line-height: 1.45;
+}
+
+.metric-sub,
+.stat-sub {
+  font-size: 0.775rem !important;
+  color: var(--dvc-text-muted) !important;
+  font-weight: 500 !important;
+}
+
+.stat-title-label,
+.text-muted,
+.sub-desc {
+  color: var(--dvc-text-muted) !important;
+}
+
+/* Ant Design label & hint refinements */
+.ant-statistic-title {
+  color: var(--dvc-text-muted) !important;
+  font-weight: 500 !important;
+}
+
 /* Accessibility: Respect Reduced Motion */
 @media (prefers-reduced-motion: reduce) {
   *, ::before, ::after {
@@ -236,3 +267,31 @@ html, body {
     scroll-behavior: auto !important;
   }
 }
+
+/* Header Notification Button on dark green background */
+.citizen-header .noti-btn,
+.noti-btn {
+  color: #FFFFFF !important;
+
+  .ant-badge {
+    color: #FFFFFF !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
+  i, .anticon, [nz-icon], svg {
+    color: #FFFFFF !important;
+    fill: currentColor !important;
+  }
+
+  &:hover {
+    color: #E6C875 !important;
+    i, .anticon, [nz-icon], svg {
+      color: #E6C875 !important;
+      fill: #E6C875 !important;
+    }
+  }
+}
+
+

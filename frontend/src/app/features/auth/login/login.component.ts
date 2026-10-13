@@ -45,6 +45,7 @@ export class LoginComponent {
   isLoading = false;
   errorMessage = '';
   selectedTab = 0; // 0: Citizen, 1: Officer/Admin
+  passwordVisible = false;
 
   onSubmit(): void {
     if (this.loginForm.invalid) {

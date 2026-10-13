@@ -19,6 +19,7 @@ import com.citizenportal.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,16 +43,33 @@ public class DataInitializer implements CommandLineRunner {
     private final FaqRepository faqRepository;
     private final ChatbotSettingRepository chatbotSettingRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JdbcTemplate jdbcTemplate;
 
     @Override
     @Transactional
     public void run(String... args) {
+        patchDatabaseSchema();
         initRoles();
         initUsers();
         initProcedures();
         initFaqs();
         initChatbotSettings();
         log.info("=== Khởi tạo dữ liệu hệ thống hoàn tất! ===");
+    }
+
+    private void patchDatabaseSchema() {
+        try {
+            jdbcTemplate.execute("ALTER TABLE support_conversations ALTER COLUMN staff_id DROP NOT NULL");
+            log.info("Đã cập nhật cột support_conversations.staff_id thành NULLABLE.");
+        } catch (Exception e) {
+            log.debug("Lưu ý khi patch support_conversations.staff_id: {}", e.getMessage());
+        }
+        try {
+            jdbcTemplate.execute("ALTER TABLE support_messages ALTER COLUMN sender_id DROP NOT NULL");
+            log.info("Đã cập nhật cột support_messages.sender_id thành NULLABLE.");
+        } catch (Exception e) {
+            log.debug("Lưu ý khi patch support_messages.sender_id: {}", e.getMessage());
+        }
     }
 
     private void initRoles() {

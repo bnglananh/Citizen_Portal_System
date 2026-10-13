@@ -34,6 +34,8 @@ chatbot_settings (bảng lưu cấu hình tham số hệ thống và persona xư
 | `notifications` | Danh sách thông báo in-app gửi tới từng người dùng |
 | `chat_conversations` | Các phiên hội thoại chat giữa người dùng và trợ lý ảo AI |
 | `chat_messages` | Từng tin nhắn hỏi/đáp trong phiên hội thoại AI |
+| `support_conversations` | Các phiên hỗ trợ khẩn cấp trực tiếp giữa Công dân và Cán bộ phụ trách (`citizen_id`, `staff_id`, `status`) |
+| `support_messages` | Chi tiết tin nhắn trao đổi trong phiên hỗ trợ, lưu nội dung văn bản và tệp đính kèm |
 | `faqs` | Bộ câu hỏi & câu trả lời thường gặp (phân loại theo danh mục) |
 | `chatbot_settings` | Bảng cấu hình tham số trợ lý AI (phong cách xưng hô `PERSONA_TONE`, mô hình, nhiệt độ) |
 
@@ -57,4 +59,9 @@ chatbot_settings (bảng lưu cấu hình tham số hệ thống và persona xư
 
 5. **Bảo toàn Audit Log (`application_history`)**:
    - Bảng này hoạt động theo nguyên tắc **Append-only** (chỉ INSERT), nghiêm cấm mọi thao tác UPDATE hoặc DELETE tại tầng Service.
+
+6. **Độc quyền phiên hỗ trợ khẩn cấp (`support_conversations`)**:
+   - Cán bộ được phân công ngẫu nhiên khi khởi tạo phiên; truy vấn danh sách lọc nghiêm ngặt theo `staff_id = currentUserId` để đảm bảo cán bộ khác không thấy phiên đã có người phụ trách.
+   - Tài liệu đính kèm lưu an toàn theo quy chuẩn lưu trữ tập trung của hệ thống tại thư mục `support/`.
+
 

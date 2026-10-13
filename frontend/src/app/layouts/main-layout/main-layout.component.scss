@@ -198,21 +198,48 @@
     flex-shrink: 0;
 
     .noti-btn {
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       border-radius: 50%;
       width: 38px;
       height: 38px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
-      color: #fff;
-      font-size: 1.15rem;
+      color: #FFFFFF !important;
+      font-size: 1.2rem;
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: all 0.2s ease;
+
+      ::ng-deep .ant-badge,
+      ::ng-deep nz-badge {
+        color: #FFFFFF !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      ::ng-deep i,
+      ::ng-deep .anticon,
+      ::ng-deep [nz-icon],
+      ::ng-deep svg {
+        color: #FFFFFF !important;
+        fill: currentColor !important;
+        font-size: 1.25rem !important;
+        transition: color 0.2s ease;
+      }
 
       &:hover {
-        background: rgba(255, 255, 255, 0.22);
+        background: rgba(255, 255, 255, 0.24);
+        border-color: rgba(230, 200, 117, 0.5);
+
+        ::ng-deep i,
+        ::ng-deep .anticon,
+        ::ng-deep [nz-icon],
+        ::ng-deep svg {
+          color: #E6C875 !important;
+          fill: #E6C875 !important;
+        }
       }
     }
 

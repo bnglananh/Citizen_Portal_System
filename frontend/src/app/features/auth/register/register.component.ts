@@ -53,6 +53,10 @@ export class RegisterComponent implements OnDestroy {
   isSendingOtp = false;
   hasSentOtpAtLeastOnce = false;
 
+  // Password Visibility State
+  passwordVisible = false;
+  confirmPasswordVisible = false;
+
   // OTP State
   otpCode = '';
   countdownSeconds = 0;

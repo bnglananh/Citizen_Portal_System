@@ -49,14 +49,20 @@
         <nz-input-wrapper>
           <span nzInputPrefix><i nz-icon nzType="lock"></i></span>
           <input
-            type="password"
+            [type]="passwordVisible ? 'text' : 'password'"
             nz-input
             formControlName="password"
             placeholder="Nhập mật khẩu"
           />
-        
+          <span
+            nzInputSuffix
+            class="password-toggle-icon"
+            (click)="passwordVisible = !passwordVisible"
+            [title]="passwordVisible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'"
+          >
+            <i nz-icon [nzType]="passwordVisible ? 'eye-invisible' : 'eye'"></i>
+          </span>
         </nz-input-wrapper>
-        <ng-template #prefixLock><i nz-icon nzType="lock"></i></ng-template>
       </nz-form-control>
     </nz-form-item>
 

@@ -50,8 +50,9 @@
       }
 
       .box-subtitle {
-        font-size: 0.82rem;
-        color: var(--dvc-text-muted, #8C8A82);
+        font-size: 0.85rem;
+        color: var(--dvc-text-muted);
+        font-weight: 500;
         margin: 0;
       }
     }
@@ -109,7 +110,8 @@
         font-size: 0.85rem;
 
         .lbl {
-          color: var(--dvc-text-muted, #8C8A82);
+          color: var(--dvc-text-muted);
+          font-weight: 500;
         }
 
         .val {
@@ -194,8 +196,8 @@
 
       .qr-hint-overlay {
         margin-top: 0.5rem;
-        font-size: 0.72rem;
-        color: var(--dvc-text-muted, #8C8A82);
+        font-size: 0.75rem;
+        color: var(--dvc-text-muted);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -294,7 +296,8 @@
 
     .receipt-code {
       font-size: 0.8rem;
-      color: #8C8A82;
+      color: var(--dvc-text-muted);
+      font-weight: 500;
     }
   }
 

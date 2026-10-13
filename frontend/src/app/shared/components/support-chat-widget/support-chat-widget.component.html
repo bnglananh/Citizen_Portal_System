@@ -1,0 +1,185 @@
+<!-- Floating Action Button (Kênh Khẩn cấp trực tiếp với Cán bộ - Hình tròn dạng tin nhắn) -->
+<button
+  type="button"
+  class="support-chat-fab"
+  (click)="toggleChat()"
+  [class.active]="isOpen"
+  aria-label="Hỗ trợ khẩn cấp với Cán bộ trực tiếp"
+  nz-tooltip
+  nzTooltipTitle="Hỗ trợ khẩn cấp từ Cán bộ trực ban"
+  nzTooltipPlacement="left"
+>
+  @if (!isOpen) {
+    <div class="fab-icon-inner">
+      <i nz-icon nzType="message" nzTheme="outline" class="msg-icon"></i>
+      <span class="live-pulse-dot"></span>
+      <span class="support-badge">SOS</span>
+    </div>
+  } @else {
+    <i nz-icon nzType="close" nzTheme="outline" class="close-icon"></i>
+  }
+</button>
+
+
+<!-- Support Chat Window -->
+@if (isOpen) {
+  <div class="support-panel animate-slide-up">
+    <!-- Header -->
+    <div class="support-header">
+      <div class="officer-info">
+        <div class="officer-avatar">
+          <i nz-icon nzType="user" nzTheme="outline"></i>
+          <span class="online-indicator"></span>
+        </div>
+        <div class="officer-meta">
+          <h4>{{ conversation?.staffId ? conversation?.staffName : 'Tổ Hỗ Trợ Trực Tuyến' }}</h4>
+          <span class="officer-sub">
+            <span class="urgent-badge">HỖ TRỢ GẤP</span>
+            {{ conversation?.staffId ? 'Cán bộ đang hỗ trợ trực tiếp' : 'Đang chờ cán bộ tiếp nhận' }}
+          </span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button nz-button nzType="text" class="btn-close" (click)="toggleChat()" title="Thu nhỏ khung chat">
+          <i nz-icon nzType="close" nzTheme="outline"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Notice Banner -->
+    <div class="support-emergency-banner">
+      <i nz-icon nzType="alert" nzTheme="fill" class="banner-icon"></i>
+      <span>Kênh hỗ trợ khẩn cấp khi gặp trục trặc nộp hồ sơ hoặc hệ thống. Phân công ngẫu nhiên 1 cán bộ phụ trách riêng.</span>
+    </div>
+
+    <!-- Messages Container -->
+    <div class="support-body" #scrollContainer>
+      @if (isLoading) {
+        <div class="loading-state">
+          <i nz-icon nzType="loading" nzTheme="outline"></i>
+          <span>Đang kết nối tới cán bộ phụ trách...</span>
+        </div>
+      } @else if (connectionError) {
+        <div class="loading-state error-connection">
+          <i nz-icon nzType="exclamation-circle" nzTheme="outline" style="color: #ff4d4f; font-size: 24px;"></i>
+          <span style="color: #cf1322; font-size: 0.9rem;">{{ connectionError }}</span>
+          <button nz-button nzType="primary" nzSize="small" (click)="loadOrCreateConversation()" style="margin-top: 8px;">
+            <i nz-icon nzType="reload"></i> Thử lại kết nối
+          </button>
+        </div>
+      } @else {
+        <div class="messages-list">
+          @for (msg of messages; track msg.id) {
+            <div class="chat-row" [class.citizen-row]="msg.senderRole === 'ROLE_CITIZEN'" [class.staff-row]="msg.senderRole !== 'ROLE_CITIZEN'">
+              @if (msg.senderRole !== 'ROLE_CITIZEN') {
+                <div class="msg-avatar staff-avt">
+                  <i nz-icon nzType="safety-certificate" nzTheme="outline"></i>
+                </div>
+              }
+
+              <div class="msg-bubble" [class.citizen-bubble]="msg.senderRole === 'ROLE_CITIZEN'" [class.staff-bubble]="msg.senderRole !== 'ROLE_CITIZEN'">
+                <div class="sender-name">
+                  {{ msg.senderRole === 'ROLE_CITIZEN' ? 'Bạn' : (msg.senderName || 'Cán bộ tiếp nhận') }}
+                </div>
+
+                @if (msg.content) {
+                  <div class="msg-content">{{ msg.content }}</div>
+                }
+
+                <!-- Attachment (Hình ảnh hoặc Tài liệu) -->
+                @if (msg.attachmentUrl) {
+                  <div class="msg-attachment-wrap">
+                    @if (isImage(msg.attachmentType, msg.attachmentUrl)) {
+                      <div class="img-preview-box">
+                        <a [href]="getDownloadUrl(msg.attachmentUrl)" target="_blank" rel="noopener noreferrer" class="img-link" title="Bấm để mở ảnh kích thước gốc">
+                          <img [src]="getDownloadUrl(msg.attachmentUrl)" [alt]="msg.attachmentName || 'Hình ảnh đính kèm'" class="chat-image" />
+                          <div class="img-caption-bar">
+                            <i nz-icon nzType="picture" nzTheme="outline"></i>
+                            <span class="caption-text">{{ msg.attachmentName || 'Hình ảnh đính kèm' }}</span>
+                          </div>
+                        </a>
+                      </div>
+                    } @else {
+                      <a [href]="getDownloadUrl(msg.attachmentUrl)" target="_blank" class="doc-attachment-card">
+                        <i nz-icon nzType="file-text" nzTheme="outline" class="doc-icon"></i>
+                        <div class="doc-details">
+                          <span class="doc-name" [title]="msg.attachmentName || 'Tệp đính kèm'">
+                            {{ msg.attachmentName || 'Tài liệu đính kèm' }}
+                          </span>
+                          <span class="doc-download-action">
+                            <i nz-icon nzType="download"></i> Tải về tệp
+                          </span>
+                        </div>
+                      </a>
+                    }
+                  </div>
+                }
+
+                <div class="msg-time">{{ msg.createdAt | date:'HH:mm, dd/MM' }}</div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Selected File Preview Bar (Trước khi gửi) -->
+    @if (selectedFile) {
+      <div class="file-preview-bar">
+        <div class="file-chip">
+          @if (selectedFilePreview) {
+            <img [src]="selectedFilePreview" alt="Preview" class="preview-thumb" />
+          } @else {
+            <i nz-icon nzType="file" class="preview-file-icon"></i>
+          }
+          <span class="file-chip-name" [title]="selectedFile.name">{{ selectedFile.name }}</span>
+          <button type="button" class="btn-remove-file" (click)="removeSelectedFile()" title="Hủy tệp này">
+            <i nz-icon nzType="close"></i>
+          </button>
+        </div>
+      </div>
+    }
+
+    <!-- Footer Input Bar -->
+    <div class="support-footer">
+      <input
+        type="file"
+        #fileInput
+        (change)="onFileSelected($event)"
+        style="display: none;"
+        accept="image/*,.pdf,.doc,.docx"
+      />
+
+      <button
+        nz-button
+        nzType="text"
+        class="btn-attach"
+        (click)="fileInput.click()"
+        title="Đính kèm ảnh hoặc tài liệu"
+      >
+        <i nz-icon nzType="paper-clip" nzTheme="outline"></i>
+      </button>
+
+      <input
+        type="text"
+        nz-input
+        [(ngModel)]="inputMessage"
+        placeholder="Nhập nội dung cần hỗ trợ gấp..."
+        (keyup.enter)="sendMessage()"
+        [disabled]="isSending || isLoading"
+        class="chat-input"
+      />
+
+      <button
+        nz-button
+        nzType="primary"
+        class="btn-send"
+        (click)="sendMessage()"
+        [nzLoading]="isSending"
+        [disabled]="(!inputMessage.trim() && !selectedFile) || isLoading"
+      >
+        <i nz-icon nzType="send" nzTheme="outline"></i>
+      </button>
+    </div>
+  </div>
+}
